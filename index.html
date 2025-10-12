@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Capture - The ultimate screen recording and content creation tool for modern teams. Simple, powerful, and intuitive.">
+    <meta name="keywords" content="screen recording, content creation, video capture, team collaboration, productivity">
+    <meta name="author" content="Capture">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Capture - Screen Recording Made Simple">
+    <meta property="og:description" content="The ultimate screen recording and content creation tool for modern teams.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://capture.app">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Capture - Screen Recording Made Simple">
+    <meta name="twitter:description"
+        content="The ultimate screen recording and content creation tool for modern teams.">
+
+    <title>Capture - Screen Recording Made Simple</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📹</text></svg>">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <div class="functional-icon">
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <span class="logo-text">Functional</span>
+        </div>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Why Functional?</a>
+            <a href="#approach" class="nav-link">Our Approach</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+        </div>
+        <button class="cta-button" id="early-access-btn">Get Early Access</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-line">Recording done right.</span>
+                    <span class="title-line">Content made better.</span>
+                </h1>
+                <p class="hero-description">
+                    Capture is a lightweight app for modern teams to create, edit and share screen recordings, all with
+                    professional quality and zero complexity.
+                </p>
+                <div class="hero-cta">
+                    <div class="email-input-container">
+                        <input type="email" id="email-input" placeholder="Enter your work email" class="email-input">
+                        <button class="cta-button primary" id="join-waitlist">Get Early Access</button>
+                    </div>
+                    <p class="waitlist-success" id="waitlist-success" style="display: none;">
+                        🎉 You've been added to our waitlist! We'll notify you when Capture is ready.
+                    </p>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="recording-interface">
+                    <div class="interface-header">
+                        <div class="recording-dot"></div>
+                        <span class="recording-text">Recording</span>
+                        <div class="timer">02:34</div>
+                    </div>
+                    <div class="interface-content">
+                        <div class="screen-preview">
+                            <div class="screen-element"></div>
+                            <div class="screen-element"></div>
+                            <div class="screen-element"></div>
+                        </div>
+                        <div class="recording-controls">
+                            <button class="control-btn play">▶️</button>
+                            <button class="control-btn pause">⏸️</button>
+                            <button class="control-btn stop">⏹️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="features-header">
+                <h2 class="section-title">Why Capture?</h2>
+                <h3 class="features-subtitle">Keep your workflow, enhance your content</h3>
+                <p class="features-description">
+                    Record, edit and share professional screen recordings without leaving your current tools.
+                    Get high-quality videos delivered instantly, synced with your cloud storage and ready for your team.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎬</div>
+                    <h4>Screen Recording</h4>
+                    <p>One-click recording with crystal clear quality</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✂️</div>
+                    <h4>Quick Editing</h4>
+                    <p>Trim, annotate, and enhance your recordings</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h4>Cloud Sync</h4>
+                    <p>Automatic backup and seamless sharing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Less Section -->
+    <section class="use-less">
+        <div class="container">
+            <div class="use-less-content">
+                <div class="use-less-visual">
+                    <div class="automation-demo">
+                        <div class="demo-step active">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-icon">🎯</div>
+                                <p>Set your preferences</p>
+                            </div>
+                        </div>
+                        <div class="demo-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-icon">🤖</div>
+                                <p>AI handles the rest</p>
+                            </div>
+                        </div>
+                        <div class="demo-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-icon">✨</div>
+                                <p>Perfect results every time</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="use-less-text">
+                    <h2>Use it less, automate the rest</h2>
+                    <p>
+                        With smart AI-powered features that you can set once and forget, Capture is built to reduce
+                        manual work.
+                        Focus on creating amazing content and let us handle the technical details.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Approach Section -->
+    <section class="approach" id="approach">
+        <div class="container">
+            <div class="approach-content">
+                <h2 class="section-title">Our Approach</h2>
+                <h3>Let's make software for creators.</h3>
+                <div class="approach-text">
+                    <p>
+                        We believe recording software should be invisible. It should help you create amazing content
+                        without getting in your way.
+                        It should be intuitive, fast, and reliable. And most importantly, good software should let you
+                        focus on what matters most - your content.
+                    </p>
+                    <p>
+                        You shouldn't spend time learning complex interfaces. You shouldn't worry about file formats or
+                        storage limits.
+                        You press record, create your content, and that's it. Simple as that.
+                    </p>
+                    <p>
+                        Capture isn't crammed with features you'll never use. It has everything you need for
+                        professional recordings
+                        and nothing you don't. No overwhelming menus, no confusing settings. Just pure, simple recording
+                        power.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h2 class="section-heading">Maximize your results while minimizing constraints with our solutions</h2>
+        <!-- Problem/Solution Section -->
+        <div class="problem-solution-container">
+            <div class="problem-box">
+                <div class="box-header">
+                    <span class="emoji">😰</span>
+                    <span class="box-title">Problem:</span>
+                </div>
+                <p class="box-content">"Managing multiple tools is confusing and time-consuming"</p>
+                <div class="arrow-connector">
+                    <img src="images/problem-solution-icon.png" alt="Arrow connecting problem to solution" class="arrow-image">
+                </div>
+            </div>
+        
+            <div class="solution-box">
+                <div class="box-header">
+                    <span class="emoji">😌</span>
+                    <span class="box-title">Solution:</span>
+                </div>
+                <p class="box-content">One unified platform that brings all your creative tools together in a seamless workflow.</p>
+            </div>
+        </div>
+        
+        <div class="problem-solution-container">
+            <div class="problem-box">
+                <div class="box-header">
+                    <span class="emoji">😤</span>
+                    <span class="box-title">Problem:</span>
+                </div>
+                <p class="box-content">"I spend too much time learning complex software"</p>
+                <div class="arrow-connector">
+                    <img src="images/problem-solution-icon.png" alt="Arrow connecting problem to solution" class="arrow-image">
+                </div>
+            </div>
+        
+            <div class="solution-box">
+                <div class="box-header">
+                    <span class="emoji">😊</span>
+                    <span class="box-title">Solution:</span>
+                </div>
+                <p class="box-content">Intuitive interface designed for immediate productivity - no learning curve required.</p>
+            </div>
+        </div>
+        
+        <div class="problem-solution-container">
+            <div class="problem-box">
+                <div class="box-header">
+                    <span class="emoji">😔</span>
+                    <span class="box-title">Problem:</span>
+                </div>
+                <p class="box-content">"My team can't collaborate effectively on projects"</p>
+                <div class="arrow-connector">
+                    <img src="images/problem-solution-icon.png" alt="Arrow connecting problem to solution" class="arrow-image">
+                </div>
+            </div>
+        
+            <div class="solution-box">
+                <div class="box-header">
+                    <span class="emoji">🤝</span>
+                    <span class="box-title">Solution:</span>
+                </div>
+                <p class="box-content">Built-in collaboration features that keep your entire team aligned and productive.</p>
+            </div>
+        </div>
+        <div class="container">
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Why make another screen recording app?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Screen recording tools should be simple, fast, and integrate seamlessly with your workflow.
+                            We believe existing solutions are either too complex or too basic. Capture fills that gap
+                            with
+                            professional features wrapped in a simple, intuitive interface.
+                        </p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How is Capture different?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            We're building Capture to be as simple as possible while delivering professional results.
+                            Our AI-powered features handle the technical complexity so you can focus on creating great
+                            content.
+                            Plus, seamless integration with your existing tools means no workflow disruption.
+                        </p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Is Capture right for me?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            If you create screen recordings for work, education, or content creation and want
+                            professional
+                            quality without the complexity, then Capture is perfect for you. Whether you're a solo
+                            creator
+                            or part of a team, Capture scales with your needs.
+                        </p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What platforms will be supported?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            We're launching with full support for macOS, Windows, and web browsers. Mobile apps for iOS
+                            and Android are planned for later releases. If you need support for a specific platform,
+                            let us know and we'll prioritize it.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Access Section -->
+    <section class="early-access">
+        <div class="container">
+            <div class="early-access-content">
+                <h2>Early Access & Lifetime Discount</h2>
+                <p>Can't wait? We neither.</p>
+                <p class="early-access-subtitle">Join our waitlist and get exclusive early access with a lifetime
+                    discount when Capture launches.</p>
+                <div class="email-input-container">
+                    <input type="email" id="bottom-email-input" placeholder="Enter your work email" class="email-input">
+                    <button class="cta-button primary" id="bottom-join-waitlist">Get Early Access</button>
+                </div>
+                <p class="waitlist-success" id="bottom-waitlist-success" style="display: none;">
+                    🎉 You've been added to our waitlist! We'll notify you when Capture is ready.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">📹</span>
+                    <span class="logo-text">Capture</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link">LinkedIn</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Capture. All rights reserved.</p>
+                <p>Built with ❤️ for creators everywhere</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>
