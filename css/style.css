@@ -67,7 +67,7 @@ body {
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
 }
-
+/* ***************************************************************************************************************** */
 /* Navigation */
 .navbar {
     position: fixed;
@@ -456,6 +456,8 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
+
+/* ******************************************************************************************************************* */
 /* Hero Section */
 .hero {
     min-height: 100vh;
@@ -677,6 +679,8 @@ body {
     transform: scale(1.05);
 }
 
+/* *************************************************************************************************************************** */
+
 /* Features Section */
 .features {
     padding: var(--spacing-3xl) 0;
@@ -705,13 +709,12 @@ body {
     line-height: 1.7;
 }
 
-/* *************************************************************************************************************************** */
 /* Scroll Tour Input */
 .scroll-tour-container {
     display: flex;
     justify-content: center;
     margin: var(--spacing-3xl) 0;
-    transition: all 0.6s ease;
+    transition: all 0.1s ease;
     /* position: relative; */
     flex-direction: column;
     align-items: center;
@@ -721,7 +724,7 @@ body {
     position: relative;
     width: 100%;
     max-width: 600px;
-    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     filter: grayscale(100%) brightness(0.6);
     opacity: 0.5;
 }
@@ -744,7 +747,7 @@ body {
     border-radius: var(--radius-xl);
     text-align: center;
     font-family: var(--font-family);
-    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
 }
 
@@ -854,7 +857,424 @@ body {
         0 0 36px var(--accent-color);
 }
 
+/* Base styles for all scroll progress boxes - inactive state */
+.scroll-progress-box-1,
+.scroll-progress-box-2,
+.scroll-progress-box-3 {
+    position: absolute;
+    width: 500px;
+    height: 100px;
+    
+    /* Black and white glassmorphism - inactive state */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    backdrop-filter: blur(20px) saturate(100%);
+    -webkit-backdrop-filter: blur(20px) saturate(100%);
+    
+    /* Rounded corners */
+    border-radius: 24px;
+    
+    /* Grayscale border */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* Subtle grayscale shadows */
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    
+    opacity: 0.4;
+    transform: scale(0.99);
+    transition: all 0.05s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
 
+
+/* Individual positioning */
+.scroll-progress-box-1 {
+    top: 10%;
+    right: 0%;
+}
+
+.scroll-progress-box-2 {
+    top: 20%;
+    left: 0%;
+}
+
+.scroll-progress-box-3 {
+    top: 30%;
+    right: 0%;
+}
+
+
+/* Shared shimmer overlay for all boxes */
+.scroll-progress-box-1::before,
+.scroll-progress-box-2::before,
+.scroll-progress-box-3::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    pointer-events: none;
+}
+
+/* Shared inner border for all boxes */
+.scroll-progress-box-1::after,
+.scroll-progress-box-2::after,
+.scroll-progress-box-3::after{
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: 23px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
+/* Active state - green glow for all boxes */
+.scroll-progress-box-1.active,
+.scroll-progress-box-2.active,
+.scroll-progress-box-3.active {
+    opacity: 1;
+    transform: scale(1);
+    
+    /* Green glassmorphism */
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 136, 0.15) 0%,
+        rgba(0, 255, 136, 0.05) 100%
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
+    /* Green glowing border */
+    border-color: rgba(0, 255, 136, 0.6);
+    
+    /* Green glow shadows */
+    box-shadow: 
+        0 12px 40px rgba(0, 255, 136, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(0, 255, 136, 0.4);
+}
+
+/* Active shimmer - colorful for all boxes */
+.scroll-progress-box-1.active::before,
+.scroll-progress-box-2.active::before,
+.scroll-progress-box-3.active::before{
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%,
+        rgba(0, 255, 136, 0.1) 100%
+    );
+}
+
+/* Active inner border - brighter for all boxes */
+.scroll-progress-box-1.active::after,
+.scroll-progress-box-2.active::after,
+.scroll-progress-box-3.active::after{
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+
+/* Meet box positioning */
+.meet-box {
+    position: absolute;
+    width: 80vw;
+    height: 40%;
+    
+    /* Black and white glassmorphism - inactive state */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    backdrop-filter: blur(20px) saturate(100%);
+    -webkit-backdrop-filter: blur(20px) saturate(100%);
+    
+    /* Rounded corners */
+    border-radius: 24px;
+    
+    /* Grayscale border */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* Subtle grayscale shadows */
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    
+    /* Center positioning with scale */
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    overflow: hidden;
+}
+
+/* Meet interface - hidden by default */
+.meet-interface {
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Show interface when active */
+.meet-box.active .meet-interface {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Meet header */
+.meet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meet-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.meet-icon {
+    font-size: var(--font-size-xl);
+}
+
+.meet-timer {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Participant grid */
+.meet-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Participant box */
+.participant-box {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.02) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    overflow: hidden;
+}
+
+.participant-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.01) 100%
+    );
+    pointer-events: none;
+}
+
+/* Active state animation for participant boxes */
+.meet-box.active .participant-box {
+    animation: participantFadeIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.meet-box.active .participant-box:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.meet-box.active .participant-box:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.meet-box.active .participant-box:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.meet-box.active .participant-box:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+@keyframes participantFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Participant avatar */
+.participant-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.avatar-icon {
+    font-size: var(--font-size-3xl);
+    opacity: 0.6;
+}
+
+.participant-name {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Meet controls */
+.meet-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meet-control-btn {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.meet-control-btn:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+    );
+    transform: translateY(-2px);
+}
+
+.meet-control-btn.end {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 59, 48, 0.3) 0%,
+        rgba(255, 59, 48, 0.2) 100%
+    );
+    border-color: rgba(255, 59, 48, 0.5);
+}
+
+.meet-control-btn.end:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 59, 48, 0.4) 0%,
+        rgba(255, 59, 48, 0.3) 100%
+    );
+}
+
+/* Active state for meet-box - green glow with interface */
+.meet-box.active {
+    opacity: 1;
+    transform: translateX(-50%);
+    
+    /* Green glassmorphism */
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 136, 0.15) 0%,
+        rgba(0, 255, 136, 0.05) 100%
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
+    /* Green glowing border */
+    border-color: rgba(0, 255, 136, 0.6);
+    
+    /* Green glow shadows */
+    box-shadow: 
+        0 12px 40px rgba(0, 255, 136, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(0, 255, 136, 0.4);
+}
+
+/* Active participant boxes get green accent */
+.meet-box.active .participant-box {
+    border-color: rgba(0, 255, 136, 0.3);
+}
+
+.meet-box.active .participant-avatar {
+    border-color: rgba(0, 255, 136, 0.4);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 136, 0.15) 0%,
+        rgba(0, 255, 136, 0.05) 100%
+    );
+}
+
+.meet-box.active .meet-control-btn {
+    border-color: rgba(0, 255, 136, 0.3);
+}
+
+
+
+
+
+/* ******************************************************************************************************************* */
 /* Use Less Section */
 .use-less {
     padding: var(--spacing-3xl) 0;
@@ -969,7 +1389,7 @@ body {
     line-height: 1.7;
     margin-bottom: var(--spacing-lg);
 }
-
+/* ******************************************************************************************************************* */
 /* FAQ Section */
 
 .section-heading {
@@ -1153,7 +1573,7 @@ body {
     }
 }
 
-
+/* ******************************************************************************************************************* */
 /* Reviews Section */
 .reviews-section {
     background: var(--primary-bg);
@@ -1444,7 +1864,7 @@ body {
         font-size: 50px;
     }
 }
-
+/* ******************************************************************************************************************* */
 /* Footer */
 .footer {
     background: var(--primary-bg);
