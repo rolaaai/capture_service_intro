@@ -21,6 +21,11 @@
     .features-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
+    
+    .scroll-tour-input {
+        font-size: var(--font-size-lg);
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
 }
 
 /* Tablets */
@@ -68,6 +73,19 @@
     .features-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-lg);
+    }
+    
+    .scroll-tour-input {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .scroll-tour-container {
+        margin: var(--spacing-xl) 0;
+    }
+    
+    .scroll-tour-cursor {
+        right: var(--spacing-md);
     }
     
     .automation-demo {
