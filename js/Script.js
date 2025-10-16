@@ -518,10 +518,68 @@ class PerformanceOptimizer {
     }
 }
 
+//scroll progress active boxes 
+class ScrollProgressBoxes {
+    constructor() {
+        this.progressActive = document.querySelector('.scroll-progress-active');
+        this.boxes = [
+            document.querySelector('.scroll-progress-box-1'),
+            document.querySelector('.scroll-progress-box-2'),
+            document.querySelector('.scroll-progress-box-3'),
+            document.querySelector('.meet-box')
+        ];
+        this.scrollProgressLine = document.querySelector('.scroll-progress-line');
+        
+        if (!this.progressActive || !this.scrollProgressLine || this.boxes.some(box => !box)) {
+            console.warn('ScrollProgressBoxes: Required elements not found');
+            return;
+        }
+        
+        this.init();
+    }
+
+    init() {
+        // Check on scroll with passive listener for performance
+        window.addEventListener('scroll', () => this.checkActiveBox(), { passive: true });
+        
+        // Initial check on load
+        this.checkActiveBox();
+    }
+
+    checkActiveBox() {
+        // Get the scroll progress line's position
+        const lineRect = this.scrollProgressLine.getBoundingClientRect();
+        const activeRect = this.progressActive.getBoundingClientRect();
+        
+        // Calculate the active indicator's center position relative to the line
+        const activeCenter = activeRect.top + (activeRect.height / 2) - lineRect.top;
+        
+        // Check each box
+        this.boxes.forEach(box => {
+            const boxRect = box.getBoundingClientRect();
+            
+            // Get box's top and bottom positions relative to the scroll progress line
+            const boxTop = boxRect.top - lineRect.top;
+            const boxBottom = boxRect.bottom - lineRect.top;
+            
+            // Check if active indicator's center is within the box's height range
+            const isInRange = activeCenter >= boxTop && activeCenter <= boxBottom;
+            
+            // Toggle active class immediately based on position
+            if (isInRange) {
+                box.classList.add('active');
+            } else {
+                box.classList.remove('active');
+            }
+        });
+    }
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new WaitlistManager();
     new FAQManager();
+    new ScrollProgressBoxes();
     new ScrollAnimations();
     new ScrollTourTyping();
     new DemoAnimation();
