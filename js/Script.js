@@ -141,6 +141,225 @@ class ScrollAnimations {
     }
 }
 
+// Scroll Tour Typing Effect
+class ScrollTourTyping {
+    constructor() {
+        this.input = document.getElementById('scroll-tour-input');
+        this.inputWrapper = document.querySelector('.scroll-tour-input-wrapper');
+        this.container = document.querySelector('.scroll-tour-container');
+        this.cursor = document.querySelector('.scroll-tour-cursor');
+        this.progressLine = document.querySelector('.scroll-progress-line');
+        this.progressActive = document.querySelector('.scroll-progress-active');
+        this.url = 'https://capture.app/record-now';
+        this.currentCharIndex = 0;
+        this.isTyping = false;
+        this.hasStarted = false;
+        this.isInCenter = false;
+        this.typingSpeed = 80;
+        this.pauseBeforeRestart = 1000;
+        this.pauseBeforeDelete = 1200;
+        this.deleteSpeed = 40;
+        
+        this.init();
+    }
+    
+    init() {
+        if (!this.input) return;
+        
+        const observer = new IntersectionObserver(
+            this.handleIntersection.bind(this),
+            { 
+                threshold: 0.5,
+                rootMargin: '-40% 0px -40% 0px'
+            }
+        );
+        
+        observer.observe(this.container);
+        window.addEventListener('scroll', () => this.handleScroll());
+    }
+    
+    handleScroll() {
+        if (!this.input) return;
+        
+        const rect = this.input.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const elementCenter = rect.top + rect.height / 2;
+        const viewportCenter = viewportHeight / 2;
+        const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
+        const threshold = viewportHeight * 0.2;
+        
+        // Update progress line position based on scroll
+        this.updateProgressLine(rect, viewportHeight);
+        
+        if (distanceFromCenter < threshold) {
+            this.inputWrapper.classList.add('in-center');
+            this.container.classList.add('active');
+            this.isInCenter = true;
+            
+            if (!this.hasStarted) {
+                this.hasStarted = true;
+                this.cursor.classList.add('active');
+                this.updateCursorPosition();
+                setTimeout(() => this.startTyping(), 500);
+            }
+        } else {
+            this.inputWrapper.classList.remove('in-center');
+            this.container.classList.remove('active');
+            this.isInCenter = false;
+            
+            if (this.isTyping) {
+                this.isTyping = false;
+            }
+        }
+    }
+    
+updateProgressLine(rect, viewportHeight) {
+    if (!this.progressLine || !this.progressActive) return;
+    
+    // Get the actual line element's position
+    const lineRect = this.progressLine.getBoundingClientRect();
+    const lineTop = lineRect.top; // Top of the line (the tip)
+    const lineHeight = this.progressLine.offsetHeight;
+    const lineBottom = lineTop + lineHeight;
+    
+    const viewportCenter = viewportHeight / 2;
+    
+    // Calculate progress based on line tip position relative to viewport center
+    // When line tip is at viewport center, progress = 0 (segment at top)
+    // When line bottom is at viewport center, progress = 1 (segment at bottom)
+    let progress = 0;
+    
+    if (lineTop <= viewportCenter && lineBottom >= viewportCenter) {
+        // Line is crossing the viewport center
+        progress = (viewportCenter - lineTop) / lineHeight;
+    } else if (lineBottom < viewportCenter) {
+        // Line has completely passed the center
+        progress = 1;
+    }
+    
+    // Clamp between 0 and 1
+    progress = Math.max(0, Math.min(1, progress));
+    
+    // Calculate segment position
+    const activeSegmentHeight = 50; // Match CSS height
+    const maxPosition = lineHeight - activeSegmentHeight;
+    const position = progress * maxPosition;
+    
+    // Update segment position
+    this.progressActive.style.transform = `translate(-50%, ${position}px)`;
+    
+    // Add extra brightness when input is centered (optional enhancement)
+    const elementCenter = rect.top + rect.height / 2;
+    const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
+    const threshold = viewportHeight * 0.2;
+    
+    if (distanceFromCenter < threshold) {
+        this.progressActive.style.filter = 'brightness(0.5)';
+    } else {
+        this.progressActive.style.filter = 'brightness(1)';
+    }
+}
+    
+    handleIntersection(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !this.hasStarted) {
+                const rect = this.input.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                const elementCenter = rect.top + rect.height / 2;
+                const viewportCenter = viewportHeight / 2;
+                const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
+                const threshold = viewportHeight * 0.2;
+                
+                if (distanceFromCenter < threshold) {
+                    this.hasStarted = true;
+                    this.isInCenter = true;
+                    this.inputWrapper.classList.add('in-center');
+                    this.container.classList.add('active');
+                    this.cursor.classList.add('active');
+                    this.updateCursorPosition();
+                    setTimeout(() => this.startTyping(), 500);
+                }
+            }
+        });
+    }
+    
+    updateCursorPosition() {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const computedStyle = window.getComputedStyle(this.input);
+        context.font = computedStyle.font;
+        
+        const textWidth = context.measureText(this.input.value).width;
+        const inputWidth = this.input.offsetWidth;
+        const inputPaddingLeft = parseFloat(computedStyle.paddingLeft);
+        const inputPaddingRight = parseFloat(computedStyle.paddingRight);
+        
+        const availableWidth = inputWidth - inputPaddingLeft - inputPaddingRight;
+        const textStartX = inputPaddingLeft + (availableWidth - textWidth) / 2;
+        
+        this.cursor.style.left = `${textStartX + textWidth + 2}px`;
+    }
+    
+    startTyping() {
+        if (!this.isInCenter) {
+            setTimeout(() => this.startTyping(), 100);
+            return;
+        }
+        
+        this.isTyping = true;
+        this.typeURL();
+    }
+    
+    typeURL() {
+        if (!this.isInCenter) {
+            this.isTyping = false;
+            setTimeout(() => this.startTyping(), 100);
+            return;
+        }
+        
+        if (this.currentCharIndex < this.url.length) {
+            this.input.value += this.url[this.currentCharIndex];
+            this.currentCharIndex++;
+            this.updateCursorPosition();
+            setTimeout(() => this.typeURL(), this.typingSpeed);
+        } else {
+            setTimeout(() => {
+                if (this.isInCenter) {
+                    this.deleteURL();
+                } else {
+                    this.isTyping = false;
+                    setTimeout(() => this.startTyping(), 100);
+                }
+            }, this.pauseBeforeDelete);
+        }
+    }
+    
+    deleteURL() {
+        if (!this.isInCenter) {
+            this.isTyping = false;
+            setTimeout(() => this.startTyping(), 100);
+            return;
+        }
+        
+        if (this.input.value.length > 0) {
+            this.input.value = this.input.value.slice(0, -1);
+            this.updateCursorPosition();
+            setTimeout(() => this.deleteURL(), this.deleteSpeed);
+        } else {
+            this.currentCharIndex = 0;
+            this.updateCursorPosition();
+            setTimeout(() => {
+                if (this.isInCenter) {
+                    this.typeURL();
+                } else {
+                    this.isTyping = false;
+                    setTimeout(() => this.startTyping(), 100);
+                }
+            }, this.pauseBeforeRestart);
+        }
+    }
+}
+
 // Demo step animation
 class DemoAnimation {
     constructor() {
@@ -192,7 +411,7 @@ class SmoothScroll {
     }
 }
 
-// Update the existing NavbarScroll class
+// NavbarScroll class
 class NavbarScroll {
     constructor() {
         this.navbar = document.querySelector('.navbar');
@@ -304,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new WaitlistManager();
     new FAQManager();
     new ScrollAnimations();
+    new ScrollTourTyping();
     new DemoAnimation();
     new SmoothScroll();
     new NavbarScroll();
