@@ -705,44 +705,155 @@ body {
     line-height: 1.7;
 }
 
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
-    margin-top: var(--spacing-2xl);
+/* *************************************************************************************************************************** */
+/* Scroll Tour Input */
+.scroll-tour-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-3xl) 0;
+    transition: all 0.6s ease;
+    /* position: relative; */
+    flex-direction: column;
+    align-items: center;
 }
 
-.feature-card {
-    background: var(--accent-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
-    text-align: center;
-    transition: all 0.3s ease;
+.scroll-tour-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    filter: grayscale(100%) brightness(0.6);
+    opacity: 0.5;
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-color);
-    box-shadow: var(--shadow-lg);
+/* When input is in center of screen - activate colors */
+.scroll-tour-input-wrapper.in-center {
+    filter: grayscale(0%) brightness(1);
+    opacity: 1;
+    transform: scale(1.05);
 }
 
-.feature-icon {
-    font-size: var(--font-size-4xl);
-    margin-bottom: var(--spacing-lg);
-}
-
-.feature-card h4 {
+.scroll-tour-input {
+    width: 100%;
+    padding: var(--spacing-lg) var(--spacing-xl);
     font-size: var(--font-size-xl);
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-primary);
+    font-weight: 500;
+    color: #666666; /* Grayscale color by default */
+    background: rgba(100, 100, 100, 0.05);
+    border: 1px solid #666666;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    font-family: var(--font-family);
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
 }
 
-.feature-card p {
-    color: var(--text-secondary);
-    line-height: 1.6;
+/* Activated state - colorful */
+.scroll-tour-input-wrapper.in-center .scroll-tour-input {
+    color: var(--accent-color);
+    background: rgba(0, 255, 136, 0.05);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
 }
+
+.scroll-tour-input:focus {
+    outline: none;
+}
+
+.scroll-tour-input-wrapper.in-center .scroll-tour-input:focus {
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+}
+
+.scroll-tour-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.scroll-tour-cursor {
+    position: absolute;
+    right: var(--spacing-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 60%;
+    background: var(--accent-color);
+    animation: blink 1s infinite;
+    transition: left 0.1s ease-out, opacity 0.3s ease; 
+    pointer-events: none;
+}
+.scroll-tour-cursor.active {
+    opacity: 1;
+    animation: cursorBlink 1s infinite; /* Blink animation */
+}
+
+/* Cursor turns green when active */
+.scroll-tour-input-wrapper.in-center .scroll-tour-cursor {
+    background: var(--accent-color);
+}
+
+@keyframes cursorBlink {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0;
+    }
+}
+
+
+
+/* Scroll Progress Line - Always visible */
+.scroll-progress-line {
+    position: relative;
+    width: 1px;
+    height: 2000px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: visible;
+    opacity: 1;
+    /* margin-top: var(--spacing-xl); */
+}
+
+/* Moving colored segment - Always visible, moves with scroll */
+.scroll-progress-active {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 2px;
+    height: 40px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--accent-color),
+        var(--accent-color),
+        transparent
+    );
+    box-shadow: 
+        0 0 15px var(--accent-color),
+        0 0 30px rgba(0, 255, 136, 0.5);
+    opacity: 1 !important; /* Force visibility */
+    transition: transform 0.05s linear;
+    pointer-events: none;
+    z-index: 10; /* Ensure it's above the line */
+}
+
+/* Glow effect for the active segment */
+.scroll-progress-active::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 12px var(--accent-color),
+        0 0 24px var(--accent-color),
+        0 0 36px var(--accent-color);
+}
+
 
 /* Use Less Section */
 .use-less {
