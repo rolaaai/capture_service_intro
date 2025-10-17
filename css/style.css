@@ -685,6 +685,7 @@ body {
 .features {
     padding: var(--spacing-3xl) 0;
     background: linear-gradient(to bottom, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+    margin-bottom: 2000px;
 }
 
 .features-header {
@@ -809,7 +810,7 @@ body {
 .scroll-progress-line {
     position: relative;
     width: 1px;
-    height: 2000px;
+    height: 1800px;
     background: rgba(255, 255, 255, 0.15);
     overflow: visible;
     opacity: 1;
@@ -834,7 +835,7 @@ body {
     box-shadow: 
         0 0 15px var(--accent-color),
         0 0 30px rgba(0, 255, 136, 0.5);
-    opacity: 1 !important; /* Force visibility */
+    opacity: 1 ; 
     transition: transform 0.05s linear;
     pointer-events: none;
     z-index: 10; /* Ensure it's above the line */
@@ -856,6 +857,44 @@ body {
         0 0 24px var(--accent-color),
         0 0 36px var(--accent-color);
 }
+
+/* Progress Icon Styling */
+.progress-icon {
+    position: absolute;
+    bottom: calc(var(--spacing-md) * -1);
+    left: 50%;
+    font-size: var(--font-size-xl);
+    background: var(--primary-bg);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 4px 12px rgba(130, 71, 229, 0.3);
+    opacity: 0;
+    transform: translateX(-500px);
+    transition: none;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.progress-icon.visible {
+    animation: pulseIcon 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+@keyframes pulseIcon {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0 4px 12px rgba(130, 71, 229, 0.3);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.15);
+        box-shadow: 0 6px 16px rgba(130, 71, 229, 0.6);
+    }
+}
+
 
 /* Base styles for all scroll progress boxes - inactive state */
 .scroll-progress-box-1,
@@ -900,12 +939,12 @@ body {
 }
 
 .scroll-progress-box-2 {
-    top: 20%;
+    top: 22%;
     left: 0%;
 }
 
 .scroll-progress-box-3 {
-    top: 30%;
+    top: 34%;
     right: 0%;
 }
 
@@ -1016,12 +1055,12 @@ body {
         inset 0 -1px 0 rgba(0, 0, 0, 0.2);
     
     /* Center positioning with scale */
-    top: 50%;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 /* Meet interface - hidden by default */
@@ -1099,7 +1138,7 @@ body {
     overflow: hidden;
 }
 
-.participant-box::before {
+/* .participant-box::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -1110,14 +1149,14 @@ body {
         rgba(255, 255, 255, 0.01) 100%
     );
     pointer-events: none;
-}
+} */
 
 /* Active state animation for participant boxes */
 .meet-box.active .participant-box {
     animation: participantFadeIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-.meet-box.active .participant-box:nth-child(1) {
+/* .meet-box.active .participant-box:nth-child(1) {
     animation-delay: 0.1s;
 }
 
@@ -1127,10 +1166,38 @@ body {
 
 .meet-box.active .participant-box:nth-child(3) {
     animation-delay: 0.3s;
+} */
+
+.participant-box:nth-child(4) {
+   position: relative;
+   overflow: visible;
 }
 
-.meet-box.active .participant-box:nth-child(4) {
-    animation-delay: 0.4s;
+/* Line extending from 4th participant box - starts hidden */
+.participant-box:nth-child(4)::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 1px;
+    height: 0; /* Start with 0 height */
+    background-color: var(--accent-color);
+    /* background: linear-gradient(
+        to bottom,
+        var(--accent-color),
+        rgba(0, 255, 136, 0.5),
+        transparent
+    ); */
+    opacity: 0;
+    /* transition: height 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+                opacity 0.3s ease; */
+    /* transform-origin: top center; */
+}
+
+/* Grow line when meet-box is active */
+.meet-box.active .participant-box:nth-child(4)::after {
+    opacity: 1;
+    height: 2000px; /* Final height */
 }
 
 @keyframes participantFadeIn {
