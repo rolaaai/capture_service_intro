@@ -4,15 +4,15 @@ class WaitlistManager {
         this.emailInputs = document.querySelectorAll('#email-input, #bottom-email-input');
         this.joinButtons = document.querySelectorAll('#join-waitlist, #bottom-join-waitlist');
         this.successMessages = document.querySelectorAll('#waitlist-success, #bottom-waitlist-success');
-        
+
         this.init();
     }
-    
+
     init() {
         this.joinButtons.forEach((button, index) => {
             button.addEventListener('click', () => this.handleJoinWaitlist(index));
         });
-        
+
         this.emailInputs.forEach((input, index) => {
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -21,18 +21,18 @@ class WaitlistManager {
             });
         });
     }
-    
+
     handleJoinWaitlist(index) {
         const email = this.emailInputs[index].value.trim();
-        
+
         if (!this.validateEmail(email)) {
             this.showError(index, 'Please enter a valid email address');
             return;
         }
-        
+
         // Simulate API call
         this.showLoading(index);
-        
+
         setTimeout(() => {
             this.showSuccess(index);
             this.emailInputs[index].value = '';
@@ -40,12 +40,12 @@ class WaitlistManager {
             console.log('Email added to waitlist:', email);
         }, 1000);
     }
-    
+
     validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
-    
+
     showLoading(index) {
         const button = this.joinButtons[index];
         const originalText = button.textContent;
@@ -53,21 +53,21 @@ class WaitlistManager {
         button.disabled = true;
         button.dataset.originalText = originalText;
     }
-    
+
     showSuccess(index) {
         const button = this.joinButtons[index];
         const message = this.successMessages[index];
-        
+
         button.textContent = button.dataset.originalText;
         button.disabled = false;
         message.style.display = 'block';
-        
+
         // Hide success message after 5 seconds
         setTimeout(() => {
             message.style.display = 'none';
         }, 5000);
     }
-    
+
     showError(index, message) {
         // You could implement error display here
         console.error('Error:', message);
@@ -80,22 +80,22 @@ class FAQManager {
         this.faqItems = document.querySelectorAll('.faq-item');
         this.init();
     }
-    
+
     init() {
         this.faqItems.forEach(item => {
             const question = item.querySelector('.faq-question');
             question.addEventListener('click', () => this.toggleFAQ(item));
         });
     }
-    
+
     toggleFAQ(item) {
         const isActive = item.classList.contains('active');
-        
+
         // Close all FAQ items
         this.faqItems.forEach(faqItem => {
             faqItem.classList.remove('active');
         });
-        
+
         // Open clicked item if it wasn't active
         if (!isActive) {
             item.classList.add('active');
@@ -112,18 +112,18 @@ class ScrollAnimations {
         };
         this.init();
     }
-    
+
     init() {
         if ('IntersectionObserver' in window) {
             this.observer = new IntersectionObserver(
                 this.handleIntersection.bind(this),
                 this.observerOptions
             );
-            
+
             this.observeElements();
         }
     }
-    
+
     observeElements() {
         const elements = document.querySelectorAll('.feature-card, .demo-step, .use-less-text, .approach-text');
         elements.forEach(el => {
@@ -131,7 +131,7 @@ class ScrollAnimations {
             this.observer.observe(el);
         });
     }
-    
+
     handleIntersection(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -159,43 +159,43 @@ class ScrollTourTyping {
         this.pauseBeforeRestart = 1000;
         this.pauseBeforeDelete = 1200;
         this.deleteSpeed = 40;
-        
+
         this.init();
     }
-    
+
     init() {
         if (!this.input) return;
-        
+
         const observer = new IntersectionObserver(
             this.handleIntersection.bind(this),
-            { 
+            {
                 threshold: 0.5,
                 rootMargin: '-40% 0px -40% 0px'
             }
         );
-        
+
         observer.observe(this.container);
         window.addEventListener('scroll', () => this.handleScroll());
     }
-    
+
     handleScroll() {
         if (!this.input) return;
-        
+
         const rect = this.input.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const elementCenter = rect.top + rect.height / 2;
         const viewportCenter = viewportHeight / 2;
         const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
         const threshold = viewportHeight * 0.2;
-        
+
         // Update progress line position based on scroll
         this.updateProgressLine(rect, viewportHeight);
-        
+
         if (distanceFromCenter < threshold) {
             this.inputWrapper.classList.add('in-center');
             this.container.classList.add('active');
             this.isInCenter = true;
-            
+
             if (!this.hasStarted) {
                 this.hasStarted = true;
                 this.cursor.classList.add('active');
@@ -206,60 +206,60 @@ class ScrollTourTyping {
             this.inputWrapper.classList.remove('in-center');
             this.container.classList.remove('active');
             this.isInCenter = false;
-            
+
             if (this.isTyping) {
                 this.isTyping = false;
             }
         }
     }
-    
-updateProgressLine(rect, viewportHeight) {
-    if (!this.progressLine || !this.progressActive) return;
-    
-    // Get the actual line element's position
-    const lineRect = this.progressLine.getBoundingClientRect();
-    const lineTop = lineRect.top; // Top of the line (the tip)
-    const lineHeight = this.progressLine.offsetHeight;
-    const lineBottom = lineTop + lineHeight;
-    
-    const viewportCenter = viewportHeight / 2;
-    
-    // Calculate progress based on line tip position relative to viewport center
-    // When line tip is at viewport center, progress = 0 (segment at top)
-    // When line bottom is at viewport center, progress = 1 (segment at bottom)
-    let progress = 0;
-    
-    if (lineTop <= viewportCenter && lineBottom >= viewportCenter) {
-        // Line is crossing the viewport center
-        progress = (viewportCenter - lineTop) / lineHeight;
-    } else if (lineBottom < viewportCenter) {
-        // Line has completely passed the center
-        progress = 1;
+
+    updateProgressLine(rect, viewportHeight) {
+        if (!this.progressLine || !this.progressActive) return;
+
+        // Get the actual line element's position
+        const lineRect = this.progressLine.getBoundingClientRect();
+        const lineTop = lineRect.top; // Top of the line (the tip)
+        const lineHeight = this.progressLine.offsetHeight;
+        const lineBottom = lineTop + lineHeight;
+
+        const viewportCenter = viewportHeight / 2;
+
+        // Calculate progress based on line tip position relative to viewport center
+        // When line tip is at viewport center, progress = 0 (segment at top)
+        // When line bottom is at viewport center, progress = 1 (segment at bottom)
+        let progress = 0;
+
+        if (lineTop <= viewportCenter && lineBottom >= viewportCenter) {
+            // Line is crossing the viewport center
+            progress = (viewportCenter - lineTop) / lineHeight;
+        } else if (lineBottom < viewportCenter) {
+            // Line has completely passed the center
+            progress = 1;
+        }
+
+        // Clamp between 0 and 1
+        progress = Math.max(0, Math.min(1, progress));
+
+        // Calculate segment position
+        const activeSegmentHeight = 50; // Match CSS height
+        const maxPosition = lineHeight - activeSegmentHeight;
+        const position = progress * maxPosition;
+
+        // Update segment position
+        this.progressActive.style.transform = `translate(-50%, ${position}px)`;
+
+        // Add extra brightness when input is centered (optional enhancement)
+        const elementCenter = rect.top + rect.height / 2;
+        const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
+        const threshold = viewportHeight * 0.2;
+
+        if (distanceFromCenter < threshold) {
+            this.progressActive.style.filter = 'brightness(0.5)';
+        } else {
+            this.progressActive.style.filter = 'brightness(1)';
+        }
     }
-    
-    // Clamp between 0 and 1
-    progress = Math.max(0, Math.min(1, progress));
-    
-    // Calculate segment position
-    const activeSegmentHeight = 50; // Match CSS height
-    const maxPosition = lineHeight - activeSegmentHeight;
-    const position = progress * maxPosition;
-    
-    // Update segment position
-    this.progressActive.style.transform = `translate(-50%, ${position}px)`;
-    
-    // Add extra brightness when input is centered (optional enhancement)
-    const elementCenter = rect.top + rect.height / 2;
-    const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
-    const threshold = viewportHeight * 0.2;
-    
-    if (distanceFromCenter < threshold) {
-        this.progressActive.style.filter = 'brightness(0.5)';
-    } else {
-        this.progressActive.style.filter = 'brightness(1)';
-    }
-}
-    
+
     handleIntersection(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting && !this.hasStarted) {
@@ -269,7 +269,7 @@ updateProgressLine(rect, viewportHeight) {
                 const viewportCenter = viewportHeight / 2;
                 const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
                 const threshold = viewportHeight * 0.2;
-                
+
                 if (distanceFromCenter < threshold) {
                     this.hasStarted = true;
                     this.isInCenter = true;
@@ -282,41 +282,41 @@ updateProgressLine(rect, viewportHeight) {
             }
         });
     }
-    
+
     updateCursorPosition() {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         const computedStyle = window.getComputedStyle(this.input);
         context.font = computedStyle.font;
-        
+
         const textWidth = context.measureText(this.input.value).width;
         const inputWidth = this.input.offsetWidth;
         const inputPaddingLeft = parseFloat(computedStyle.paddingLeft);
         const inputPaddingRight = parseFloat(computedStyle.paddingRight);
-        
+
         const availableWidth = inputWidth - inputPaddingLeft - inputPaddingRight;
         const textStartX = inputPaddingLeft + (availableWidth - textWidth) / 2;
-        
+
         this.cursor.style.left = `${textStartX + textWidth + 2}px`;
     }
-    
+
     startTyping() {
         if (!this.isInCenter) {
             setTimeout(() => this.startTyping(), 100);
             return;
         }
-        
+
         this.isTyping = true;
         this.typeURL();
     }
-    
+
     typeURL() {
         if (!this.isInCenter) {
             this.isTyping = false;
             setTimeout(() => this.startTyping(), 100);
             return;
         }
-        
+
         if (this.currentCharIndex < this.url.length) {
             this.input.value += this.url[this.currentCharIndex];
             this.currentCharIndex++;
@@ -333,14 +333,14 @@ updateProgressLine(rect, viewportHeight) {
             }, this.pauseBeforeDelete);
         }
     }
-    
+
     deleteURL() {
         if (!this.isInCenter) {
             this.isTyping = false;
             setTimeout(() => this.startTyping(), 100);
             return;
         }
-        
+
         if (this.input.value.length > 0) {
             this.input.value = this.input.value.slice(0, -1);
             this.updateCursorPosition();
@@ -367,13 +367,13 @@ class DemoAnimation {
         this.currentStep = 0;
         this.init();
     }
-    
+
     init() {
         if (this.demoSteps.length > 0) {
             this.startAnimation();
         }
     }
-    
+
     startAnimation() {
         setInterval(() => {
             this.demoSteps.forEach(step => step.classList.remove('active'));
@@ -388,19 +388,19 @@ class SmoothScroll {
     constructor() {
         this.init();
     }
-    
+
     init() {
         const navLinks = document.querySelectorAll('a[href^="#"]');
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => this.handleClick(e, link));
         });
     }
-    
+
     handleClick(e, link) {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
         const targetElement = document.getElementById(targetId);
-        
+
         if (targetElement) {
             const offsetTop = targetElement.offsetTop - 80; // Account for fixed navbar
             window.scrollTo({
@@ -420,25 +420,25 @@ class NavbarScroll {
         this.emailInputSection = document.querySelector('.hero-cta');
         this.init();
     }
-    
+
     init() {
         window.addEventListener('scroll', () => this.handleScroll());
     }
-    
+
     handleScroll() {
         const currentScrollY = window.scrollY;
         const isScrollingDown = currentScrollY > this.lastScrollY;
         const scrollDifference = Math.abs(currentScrollY - this.lastScrollY);
-        
+
         // Only trigger animations if there's significant scroll movement (threshold)
         if (scrollDifference < 10) {
             return;
         }
-        
+
         // Determine navbar state based on scroll position
         let shouldBeScrolled = currentScrollY > 100;
         let shouldBeHidden = false;
-        
+
         // Show/hide based on scroll direction (only after initial 100px scroll)
         if (currentScrollY > 100) {
             if (isScrollingDown) {
@@ -447,14 +447,14 @@ class NavbarScroll {
                 shouldBeHidden = false; // Hide when scrolling down
             }
         }
-        
+
         // Remove all state classes first
         this.navbar.classList.remove('scrolled', 'hide-up', 'show-down');
-        
+
         // Apply new state
         if (shouldBeScrolled) {
             this.navbar.classList.add('scrolled');
-            
+
             if (shouldBeHidden) {
                 this.navbar.classList.add('hide-up');
             } else {
@@ -468,7 +468,7 @@ class NavbarScroll {
                 this.navbar.classList.add('show-down');
             }
         }
-        
+
         this.lastScrollY = currentScrollY;
     }
 }
@@ -478,15 +478,15 @@ class PerformanceOptimizer {
     constructor() {
         this.init();
     }
-    
+
     init() {
         // Lazy load images when they're added
         this.observeImages();
-        
+
         // Preload critical resources
         this.preloadResources();
     }
-    
+
     observeImages() {
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver((entries) => {
@@ -501,13 +501,13 @@ class PerformanceOptimizer {
                     }
                 });
             });
-            
+
             document.querySelectorAll('img[data-src]').forEach(img => {
                 imageObserver.observe(img);
             });
         }
     }
-    
+
     preloadResources() {
         // Preload critical CSS
         const criticalCSS = document.createElement('link');
@@ -529,19 +529,19 @@ class ScrollProgressBoxes {
             document.querySelector('.meet-box')
         ];
         this.scrollProgressLine = document.querySelector('.scroll-progress-line');
-        
+
         if (!this.progressActive || !this.scrollProgressLine || this.boxes.some(box => !box)) {
             console.warn('ScrollProgressBoxes: Required elements not found');
             return;
         }
-        
+
         this.init();
     }
 
     init() {
         // Check on scroll with passive listener for performance
         window.addEventListener('scroll', () => this.checkActiveBox(), { passive: true });
-        
+
         // Initial check on load
         this.checkActiveBox();
     }
@@ -550,21 +550,21 @@ class ScrollProgressBoxes {
         // Get the scroll progress line's position
         const lineRect = this.scrollProgressLine.getBoundingClientRect();
         const activeRect = this.progressActive.getBoundingClientRect();
-        
+
         // Calculate the active indicator's center position relative to the line
         const activeCenter = activeRect.top + (activeRect.height / 2) - lineRect.top;
-        
+
         // Check each box
         this.boxes.forEach(box => {
             const boxRect = box.getBoundingClientRect();
-            
+
             // Get box's top and bottom positions relative to the scroll progress line
             const boxTop = boxRect.top - lineRect.top;
             const boxBottom = boxRect.bottom - lineRect.top;
-            
+
             // Check if active indicator's center is within the box's height range
             const isInRange = activeCenter >= boxTop && activeCenter <= boxBottom;
-            
+
             // Toggle active class immediately based on position
             if (isInRange) {
                 box.classList.add('active');
@@ -572,6 +572,111 @@ class ScrollProgressBoxes {
                 box.classList.remove('active');
             }
         });
+    }
+}
+// Progress Icon Animation
+class ProgressIconAnimation {
+    constructor() {
+        this.progressActive = document.querySelector('.scroll-progress-active');
+        this.box3 = document.querySelector('.scroll-progress-box-3');
+        this.rolaaBot = document.querySelector('.participant-box:nth-child(4)');
+        this.icon = document.querySelector('.progress-icon');
+        this.scrollProgressLine = document.querySelector('.scroll-progress-line');
+        this.lastProgress = 0;
+        this.lastRolaaBotProgress = 0;
+        this.startDistance = -500; // Increased from -150px
+        this.startDistanceToRolaabot = 0; // Increased from -150px
+
+        if (!this.progressActive || !this.box3 || !this.icon || !this.scrollProgressLine) {
+            console.warn('ProgressIconAnimation: Required elements not found');
+            return;
+        }
+
+        this.init();
+    }
+
+    init() {
+        // Check on scroll with passive listener for performance
+        window.addEventListener('scroll', () => this.checkIconVisibility(), { passive: true });
+
+        // Initial check on load
+        this.checkIconVisibility();
+    }
+
+    checkIconVisibility() {
+        // Get positions relative to the scroll progress line
+        const lineRect = this.scrollProgressLine.getBoundingClientRect();
+        const activeRect = this.progressActive.getBoundingClientRect();
+        const box3Rect = this.box3.getBoundingClientRect();
+        const rolaaBotRect = this.rolaaBot.getBoundingClientRect();
+        // Calculate RolaaBot center positions
+        const rolaaBotCenterX = rolaaBotRect.left + (rolaaBotRect.width / 2);
+        const rolaaBotCenterY = rolaaBotRect.top + (rolaaBotRect.height / 2);
+        // Calculate scroll progress line center X position
+        const lineCenterX = lineRect.left + (lineRect.width / 2);
+
+
+
+        // Calculate the active indicator's center position relative to the line
+        const activeCenter = activeRect.top + (activeRect.height / 2) - lineRect.top;
+
+        // Get box-3's top position relative to the line
+        const box3Top = box3Rect.top - lineRect.top;
+        const rolaaBotTop = rolaaBotRect.top - lineRect.top;
+        // Calculate horizontal (X) distance from line to RolaaBot center
+        const xDistanceFromLine = rolaaBotCenterX - lineCenterX;
+        const yDistanceFromTopRolaaBot = rolaaBotRect.height / 2;
+        // console.log('yDistanceFromTopRolaaBot:', rolaaBotCenterY - lineRect.top);
+        this.startDistanceToRolaabot = xDistanceFromLine;
+
+        // Calculate progress percentage (0 to 1) as we approach box-3
+        const triggerDistance = yDistanceFromTopRolaaBot; // Start animation 200px before reaching box-3
+        const distanceToRolaabot = (rolaaBotTop - activeCenter) + yDistanceFromTopRolaaBot;
+        const distanceToBox3 = box3Top - activeCenter;
+        const progress = Math.max(0, Math.min(1, 1 - (distanceToBox3 / 50)));
+        const progressToRolaabot = Math.max(0, Math.min(1, 1 - (distanceToRolaabot / triggerDistance)));
+
+        // Calculate translateX position based on progress
+        // startDistance (hidden further left) to -50 (centered)
+        const translateValue = this.startDistance + ((Math.abs(this.startDistance) - 50) * progress);
+        const translateValueToRolaabot = this.startDistanceToRolaabot * progressToRolaabot;
+
+        // Show/hide RolaaBot based on progressToRolaabot
+        if (progressToRolaabot >= 1) {
+            this.rolaaBot.style.opacity = progressToRolaabot;
+            this.rolaaBot.style.visibility = 'visible';
+            // this.icon.style.opacity = 0;
+        } else {
+            this.rolaaBot.style.opacity = '0';
+            this.rolaaBot.style.visibility = 'hidden';
+        }
+
+        // Update icon position and opacity based on scroll progress
+        if (progress > 0) {
+
+            // console.log('translateValue:', translateValue);
+            if (progress >= 1) {
+                this.icon.classList.add('visible');
+            } else {
+                this.icon.classList.remove('visible');
+            }
+            if (progressToRolaabot > 0) {
+                this.progressActive.style.opacity = 1 - progressToRolaabot;
+                this.icon.style.transform = `translateX(${translateValueToRolaabot}px)`;
+                this.icon.classList.remove('visible');
+            } else {
+                this.icon.style.opacity = progress;
+                this.icon.style.transform = `translateX(${translateValue}px)`;
+            }
+
+        } else {
+            this.icon.classList.remove('visible');
+            this.icon.style.opacity = '0';
+            this.icon.style.transform = `translateX(${this.startDistance}px)`;
+        }
+
+        // this.lastRolaaBotProgress = progressToRolaabot;
+        // this.lastProgress = progress;
     }
 }
 
@@ -586,6 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new SmoothScroll();
     new NavbarScroll();
     new PerformanceOptimizer();
+    new ProgressIconAnimation();
 });
 
 // Handle page visibility changes for better performance
@@ -603,7 +709,7 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('load', () => {
     // Remove any loading indicators
     document.body.classList.add('loaded');
-    
+
     // Add fade-in effect to hero section
     const hero = document.querySelector('.hero');
     if (hero) {
