@@ -290,3 +290,43 @@
         animation: none;
     }
 }
+
+/* Video Shared Screen - Tablet */
+/* @media (max-width: 1024px) {
+    .video-shared-screen {
+        min-height: 200px;
+    }
+    
+    .shared-screen-video {
+        object-fit: contain;
+    }
+    
+    .video-label {
+        font-size: var(--font-size-2xs);
+        padding: var(--spacing-2xs) var(--spacing-xs);
+    }
+} */
+
+/* Video Shared Screen - Mobile */
+/* @media (max-width: 768px) {
+    .video-shared-screen {
+        min-height: 150px;
+    }
+    
+    .video-tile {
+        border-radius: var(--spacing-xs);
+    }
+    
+    .video-label {
+        bottom: var(--spacing-2xs);
+        left: var(--spacing-2xs);
+        right: var(--spacing-2xs);
+        padding: var(--spacing-2xs) var(--spacing-xs);
+    }
+    
+    .video-shared-screen::before {
+        width: 30px;
+        height: 30px;
+        border-width: 2px;
+    }
+} */
