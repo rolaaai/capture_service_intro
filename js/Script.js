@@ -358,6 +358,8 @@ class ScrollTourTyping {
             }, this.pauseBeforeRestart);
         }
     }
+
+
 }
 
 // Demo step animation
@@ -680,6 +682,328 @@ class ProgressIconAnimation {
     }
 }
 
+// Broadcast Indicator Scroll Animation
+class BroadcastIndicatorScroll {
+    constructor() {
+        this.indicator = document.querySelector('.broadcast-indicator');
+        this.meetBox = document.querySelector('.meet-box');
+        this.lineElement = document.querySelector('.broadcast-line');
+        this.init();
+    }
+
+    init() {
+        if (!this.indicator || !this.meetBox || !this.lineElement) {
+            console.warn('BroadcastIndicatorScroll: Required elements not found');
+            return;
+        }
+
+        window.addEventListener('scroll', () => this.updateIndicatorPosition(), { passive: true });
+
+        // Initial check
+        this.updateIndicatorPosition();
+    }
+
+    updateIndicatorPosition() {
+        const isMeetBoxActive = this.meetBox.classList.contains('active');
+
+        if (!isMeetBoxActive) {
+            this.indicator.style.opacity = '0';
+            return;
+        }
+
+        // Now lineElement is a real DOM element
+        const indicatorRect = this.indicator.getBoundingClientRect();
+        const indicatorHeight = indicatorRect.height;
+        const lineRect = this.lineElement.getBoundingClientRect();
+        const lineTop = lineRect.top;
+        const lineHeight = this.lineElement.offsetHeight;
+        const lineBottom = lineTop + lineHeight;
+        const disappearingHeight = 100; // Height at which the indicator starts to disappear
+        const startingAppearingHeight = 100; // Height at which the indicator starts to appear
+        // Calculate scroll progress
+        const viewportHeight = window.innerHeight;
+        const viewportCenter = viewportHeight / 2;
+        let progress = 0;
+
+        if (lineTop <= viewportCenter && lineBottom >= viewportCenter) {
+            // Line is crossing the viewport center
+            progress = (viewportCenter - lineTop) / lineHeight;
+        } else if (lineBottom < viewportCenter) {
+            // Line has completely passed the center
+            progress = 1;
+        }
+
+        // Clamp between 0 and 1
+        progress = Math.max(0, Math.min(1, progress));
+        const maxPosition = lineHeight - indicatorHeight;
+        const indicatorProgress = progress * maxPosition;
+        const appearingProgress = Math.min(1, (indicatorProgress / startingAppearingHeight));
+        const disappearingProgress = Math.min(1, ((maxPosition - indicatorProgress) / disappearingHeight));
+
+        // Adjust opacity based on appearing and disappearing progress
+        const finalOpacity = Math.min(appearingProgress, disappearingProgress);
+        this.indicator.style.opacity = finalOpacity;
+        // console.log('finalOpacity:', finalOpacity);
+
+        // Update indicator position
+        this.indicator.style.transform = `translateY(${indicatorProgress}px)`;
+        // this.indicator.style.opacity = '1';
+    }
+}
+
+// Add this new class to your existing script.js
+class VideoAutoplay {
+    constructor() {
+        this.videos = document.querySelectorAll('.shared-screen-video');
+        this.init();
+    }
+
+    init() {
+        if (this.videos.length === 0) return;
+
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                const container = video.closest('.video-shared-screen');
+
+                if (entry.isIntersecting) {
+                    this.loadAndPlayVideo(video, container);
+                } else {
+                    this.pauseVideo(video);
+                }
+            });
+        }, observerOptions);
+
+        this.videos.forEach(video => {
+            this.observer.observe(video);
+        });
+    }
+
+    loadAndPlayVideo(video, container) {
+        // Load video source if not already loaded
+        if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            const source = video.querySelector('source');
+            if (source && source.dataset.src) {
+                source.src = source.dataset.src;
+            }
+        }
+
+        // Play video when loaded
+        video.addEventListener('loadeddata', () => {
+            video.classList.add('loaded');
+            if (container) {
+                container.classList.add('video-loaded');
+            }
+        }, { once: true });
+
+        // Play with error handling
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log('Video autoplay prevented:', error);
+            });
+        }
+    }
+
+    pauseVideo(video) {
+        if (!video.paused) {
+            video.pause();
+        }
+    }
+}
+
+
+// Transcript Animation Class
+class TranscriptAnimation {
+    constructor() {
+        this.container = document.querySelector('[data-transcript-container]');
+        if (!this.container) return;
+
+        this.messages = [
+            { speaker: 'Vishal', time: '12:46 PM', text: "Let's start with the quarterly results overview", type: 'normal' },
+            { speaker: 'Harsh', time: '12:46 PM', text: "Sure, I've prepared the slides. Should I share my screen?", type: 'normal' },
+            { speaker: 'Mayank', time: '12:47 PM', text: "The numbers look promising this quarter. Revenue is up 23%", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '12:47 PM', text: "📝 Recording in progress. All participants visible.", type: 'bot' },
+            { speaker: 'Vishal', time: '12:48 PM', text: "Great work team! Let's dive into the metrics breakdown", type: 'normal' },
+            { speaker: 'Harsh', time: '12:48 PM', text: "I'll walk through the customer acquisition numbers first", type: 'normal' },
+            { speaker: 'Mayank', time: '12:49 PM', text: "CAC is down 15% while retention improved significantly", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '12:49 PM', text: "💬 Transcript quality: Excellent. Audio clear.", type: 'bot' },
+            { speaker: 'Vishal', time: '12:50 PM', text: "Excellent results. How's the product roadmap looking?", type: 'normal' },
+            { speaker: 'Harsh', time: '12:50 PM', text: "On track for Q4 launch. Beta testing starts next month", type: 'normal' },
+            { speaker: 'Mayank', time: '12:51 PM', text: "We've completed 80% of the core features already", type: 'normal' },
+            { speaker: 'Vishal', time: '12:51 PM', text: "That's ahead of schedule! What about the mobile app?", type: 'normal' },
+            { speaker: 'Harsh', time: '12:52 PM', text: "iOS version is in TestFlight. Android following in two weeks", type: 'normal' },
+            { speaker: 'Mayank', time: '12:52 PM', text: "Early feedback from beta testers has been overwhelmingly positive", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '12:52 PM', text: "🎯 Key topics detected: Product roadmap, mobile apps, beta testing", type: 'bot' },
+            { speaker: 'Vishal', time: '12:53 PM', text: "Let's talk about the marketing strategy for launch", type: 'normal' },
+            { speaker: 'Harsh', time: '12:53 PM', text: "We're planning a phased rollout starting with existing users", type: 'normal' },
+            { speaker: 'Mayank', time: '12:54 PM', text: "Content marketing pieces are ready. Blog posts, case studies, and tutorials", type: 'normal' },
+            { speaker: 'Vishal', time: '12:54 PM', text: "Good. What's the social media calendar looking like?", type: 'normal' },
+            { speaker: 'Harsh', time: '12:55 PM', text: "We have 4 weeks of content scheduled across all platforms", type: 'normal' },
+            { speaker: 'Mayank', time: '12:55 PM', text: "Influencer partnerships are confirmed. Launch event is set for the 15th", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '12:55 PM', text: "⏰ Meeting duration: 9 minutes. Recording quality: HD", type: 'bot' },
+            { speaker: 'Vishal', time: '12:56 PM', text: "Perfect timing. Now, let's review the financial projections", type: 'normal' },
+            { speaker: 'Harsh', time: '12:56 PM', text: "Q4 projections show 35% growth over Q3 numbers", type: 'normal' },
+            { speaker: 'Mayank', time: '12:57 PM', text: "Operating costs are down 12% due to infrastructure optimizations", type: 'normal' },
+            { speaker: 'Vishal', time: '12:57 PM', text: "That's impressive. How are we handling the increased server load?", type: 'normal' },
+            { speaker: 'Harsh', time: '12:58 PM', text: "Moved to auto-scaling architecture. Can handle 10x current traffic", type: 'normal' },
+            { speaker: 'Mayank', time: '12:58 PM', text: "Plus we've implemented CDN for faster global content delivery", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '12:58 PM', text: "💡 Action items detected: Review financial projections, infrastructure updates", type: 'bot' },
+            { speaker: 'Vishal', time: '12:59 PM', text: "Excellent updates all around. Team morale and bandwidth?", type: 'normal' },
+            { speaker: 'Harsh', time: '12:59 PM', text: "Team is energized. We hired 3 new engineers this month", type: 'normal' },
+            { speaker: 'Mayank', time: '1:00 PM', text: "Everyone's excited about the upcoming launch. No burnout concerns", type: 'normal' },
+            { speaker: 'Vishal', time: '1:00 PM', text: "That's what I like to hear. Let's wrap up with next steps", type: 'normal' },
+            { speaker: 'Harsh', time: '1:01 PM', text: "Final QA testing completes Friday. Marketing assets go live Monday", type: 'normal' },
+            { speaker: 'Mayank', time: '1:01 PM', text: "Press release drafted. Waiting for your final approval Vishal", type: 'normal' },
+            { speaker: 'Vishal', time: '1:02 PM', text: "I'll review it today. Great work team, this is going to be huge!", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '1:02 PM', text: "✅ Meeting summary ready. Recording saved. Transcript available.", type: 'bot' },
+            { speaker: 'Harsh', time: '1:03 PM', text: "Before we wrap, should we discuss the customer support strategy?", type: 'normal' },
+            { speaker: 'Mayank', time: '1:03 PM', text: "Good point. We're setting up 24/7 support with a chatbot for initial queries", type: 'normal' },
+            { speaker: 'Vishal', time: '1:04 PM', text: "What's the escalation process for complex issues?", type: 'normal' },
+            { speaker: 'Harsh', time: '1:04 PM', text: "Three-tier system. Chatbot, then support team, then engineering if needed", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '1:04 PM', text: "📊 Sentiment analysis: Positive tone detected throughout meeting", type: 'bot' },
+            { speaker: 'Mayank', time: '1:05 PM', text: "We've also created a comprehensive knowledge base with 50+ articles", type: 'normal' },
+            { speaker: 'Vishal', time: '1:05 PM', text: "Response time targets? What are we committing to customers?", type: 'normal' },
+            { speaker: 'Harsh', time: '1:06 PM', text: "Under 2 hours for critical issues, 24 hours for general inquiries", type: 'normal' },
+            { speaker: 'Mayank', time: '1:06 PM', text: "We're tracking everything in our new ticketing system with real-time analytics", type: 'normal' },
+            { speaker: 'Vishal', time: '1:07 PM', text: "Love it. What about enterprise customers? Any special considerations?", type: 'normal' },
+            { speaker: 'Harsh', time: '1:07 PM', text: "They get dedicated account managers and priority support channels", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '1:07 PM', text: "🔍 Key decision point identified: Enterprise support tier structure", type: 'bot' },
+            { speaker: 'Mayank', time: '1:08 PM', text: "Custom SLAs for enterprise tier with 99.9% uptime guarantee", type: 'normal' },
+            { speaker: 'Vishal', time: '1:08 PM', text: "That's competitive. How are we differentiating from competitors?", type: 'normal' },
+            { speaker: 'Harsh', time: '1:09 PM', text: "AI-powered features, better pricing, and superior user experience", type: 'normal' },
+            { speaker: 'Mayank', time: '1:09 PM', text: "Our onboarding is 60% faster than the closest competitor", type: 'normal' },
+            { speaker: 'Vishal', time: '1:10 PM', text: "Impressive data. Have we validated these claims with actual users?", type: 'normal' },
+            { speaker: 'Harsh', time: '1:10 PM', text: "Yes, through our beta program. 87% reported easier setup than alternatives", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '1:10 PM', text: "⚡ Meeting insights: 12 action items, 8 decisions made, 3 follow-ups needed", type: 'bot' },
+            { speaker: 'Mayank', time: '1:11 PM', text: "We should schedule a follow-up next week to review launch prep", type: 'normal' },
+            { speaker: 'Vishal', time: '1:11 PM', text: "Agreed. Same time next Thursday? I'll send calendar invites", type: 'normal' },
+            { speaker: 'Harsh', time: '1:12 PM', text: "Works for me. I'll prepare a final checklist for that meeting", type: 'normal' },
+            { speaker: 'Mayank', time: '1:12 PM', text: "Perfect. I'll have updated metrics and any early user feedback ready", type: 'normal' },
+            { speaker: 'Vishal', time: '1:13 PM', text: "Fantastic session everyone. Really proud of this team's execution", type: 'normal' },
+            { speaker: 'Rolaa Bot', time: '1:13 PM', text: "🎬 Recording complete. Duration: 27 minutes. Transcript processing complete.", type: 'bot' }
+        ];
+
+        this.currentIndex = 0;
+        this.isTyping = false;
+        this.typingSpeed = 30;
+        this.messageDelay = 1500;
+        this.loopDelay = 3000;
+        this.observer = null;
+
+        this.init();
+    }
+
+    init() {
+        this.setupIntersectionObserver();
+    }
+
+    setupIntersectionObserver() {
+        const options = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.isTyping) {
+                    this.startAnimation();
+                }
+            });
+        }, options);
+
+        this.observer.observe(this.container);
+    }
+
+    async startAnimation() {
+        this.isTyping = true;
+        this.container.innerHTML = '';
+        this.currentIndex = 0;
+
+        while (this.currentIndex < this.messages.length) {
+            await this.displayMessage(this.messages[this.currentIndex]);
+            this.currentIndex++;
+            await this.delay(this.messageDelay);
+        }
+
+        await this.delay(this.loopDelay);
+        this.isTyping = false;
+        this.startAnimation();
+    }
+
+    async displayMessage(messageData) {
+        const messageEl = document.createElement('div');
+        messageEl.className = `transcript-message ${messageData.type === 'bot' ? 'bot-message' : ''}`;
+
+        const headerEl = document.createElement('div');
+        headerEl.className = 'message-header';
+        headerEl.innerHTML = `
+            <span class="speaker-name">${messageData.speaker}</span>
+            <span class="message-time">${messageData.time}</span>
+        `;
+
+        const textEl = document.createElement('p');
+        textEl.className = 'message-text typing';
+
+        messageEl.appendChild(headerEl);
+        messageEl.appendChild(textEl);
+        this.container.appendChild(messageEl);
+
+        // Smooth scroll to bottom with animation
+        await this.smoothScrollToBottom();
+
+        // Trigger slide-in animation with delay for smoother effect
+        await this.delay(100);
+        messageEl.classList.add('visible');
+
+        // Type out the message
+        await this.typeText(textEl, messageData.text);
+
+        // Remove typing cursor
+        textEl.classList.remove('typing');
+    }
+
+    async typeText(element, text) {
+        for (let i = 0; i < text.length; i++) {
+            element.textContent = text.substring(0, i + 1);
+            await this.delay(this.typingSpeed);
+
+            // Auto-scroll as text appears
+            if (i % 10 === 0) { // Update scroll every 10 characters for performance
+                await this.smoothScrollToBottom();
+            }
+        }
+
+        // Final scroll after typing completes
+        await this.smoothScrollToBottom();
+    }
+
+    async smoothScrollToBottom() {
+        const targetScroll = this.container.scrollHeight;
+        const currentScroll = this.container.scrollTop;
+        const distance = targetScroll - currentScroll;
+
+        if (distance > 0) {
+            // Use smooth scroll behavior
+            this.container.scrollTo({
+                top: targetScroll,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new WaitlistManager();
@@ -692,6 +1016,9 @@ document.addEventListener('DOMContentLoaded', () => {
     new NavbarScroll();
     new PerformanceOptimizer();
     new ProgressIconAnimation();
+    new BroadcastIndicatorScroll();
+    new VideoAutoplay();
+    new TranscriptAnimation();
 });
 
 // Handle page visibility changes for better performance
