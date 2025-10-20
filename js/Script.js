@@ -751,7 +751,7 @@ class BroadcastIndicatorScroll {
     }
 }
 
-// Add this new class to your existing script.js
+// video autoplay class
 class VideoAutoplay {
     constructor() {
         this.videos = document.querySelectorAll('.shared-screen-video');
@@ -815,6 +815,65 @@ class VideoAutoplay {
         if (!video.paused) {
             video.pause();
         }
+    }
+}
+// Broadcast Message Animator Class
+class BroadcastMessageAnimator {
+    constructor() {
+        this.broadcastLine = document.querySelector('.broadcast-line');
+        this.indicator = document.querySelector('.broadcast-indicator');
+        this.messageBoxes = document.querySelectorAll('.broadcast-message-box');
+        this.meetBox = document.querySelector('.meet-box');
+        
+        if (this.broadcastLine && this.indicator && this.messageBoxes.length > 0) {
+            this.init();
+        }
+    }
+
+    init() {
+        this.setupScrollListener();
+    }
+
+    setupScrollListener() {
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    this.updateActiveMessage();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Initial check
+        this.updateActiveMessage();
+    }
+
+    updateActiveMessage() {
+        // Only run if meet-box is active
+        if (!this.meetBox.classList.contains('active')) {
+            return;
+        }
+
+        // Get indicator position relative to viewport
+        const indicatorRect = this.indicator.getBoundingClientRect();
+        const indicatorTop = indicatorRect.top + (indicatorRect.height / 2);
+
+        // Check each message box
+        this.messageBoxes.forEach((box, index) => {
+            const boxRect = box.getBoundingClientRect();
+            const boxTop = boxRect.top;
+            const boxBottom = boxRect.bottom;
+
+            // Add active class if indicator is within box bounds
+            if (indicatorTop >= boxTop && indicatorTop <= boxBottom) {
+                box.classList.add('active');
+            } else {
+                box.classList.remove('active');
+            }
+        });
     }
 }
 
@@ -1019,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new BroadcastIndicatorScroll();
     new VideoAutoplay();
     new TranscriptAnimation();
+    new BroadcastMessageAnimator();
 });
 
 // Handle page visibility changes for better performance
