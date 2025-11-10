@@ -824,7 +824,7 @@ class BroadcastMessageAnimator {
         this.indicator = document.querySelector('.broadcast-indicator');
         this.messageBoxes = document.querySelectorAll('.broadcast-message-box');
         this.meetBox = document.querySelector('.meet-box');
-        
+
         if (this.broadcastLine && this.indicator && this.messageBoxes.length > 0) {
             this.init();
         }
@@ -1062,6 +1062,100 @@ class TranscriptAnimation {
     }
 }
 
+// Card Cycling Animation Class
+class HeroCardCycling {
+    constructor() {
+        this.cards = [
+            document.querySelector('.hero-card-back-1'),
+            document.querySelector('.hero-card-back-2'),
+            document.querySelector('.hero-card-back-3'),
+            document.querySelector('.hero-card-back-4'),
+            document.querySelector('.hero-card-back-5')
+        ];
+
+        if (this.cards.some(card => !card)) {
+            console.warn('HeroCardCycling: Required card elements not found');
+            return;
+        }
+
+        this.cycleInterval = 4000; // 4 seconds between cycles
+        this.transitionDuration = 1200; // Must match CSS transition duration
+        this.isAnimating = false;
+
+        this.init();
+    }
+
+    init() {
+        // Start the cycling animation
+        this.startCycling();
+    }
+
+    startCycling() {
+        setInterval(() => {
+            if (!this.isAnimating) {
+                this.cycleCards();
+            }
+        }, this.cycleInterval);
+    }
+
+    async cycleCards() {
+        this.isAnimating = true;
+
+        // Step 1: Fade out the last card (card-5)
+        const lastCard = this.cards[4];
+        lastCard.classList.add('transitioning-out');
+
+        // Wait for fade out to complete
+        await this.delay(this.transitionDuration);
+
+        // Step 2: Move all cards back by one position
+        // Remove the last card from array
+        const removedCard = this.cards.pop();
+        
+        // Add moving-back class to all remaining cards for smooth transition
+        this.cards.forEach(card => card.classList.add('moving-back'));
+
+        // Update card classes to move them back one position
+        this.cards[3].className = 'hero-card-back-5 moving-back'; // card-4 becomes card-5
+        this.cards[2].className = 'hero-card-back-4 moving-back'; // card-3 becomes card-4
+        this.cards[1].className = 'hero-card-back-3 moving-back'; // card-2 becomes card-3
+        this.cards[0].className = 'hero-card-back-2 moving-back'; // card-1 becomes card-2
+
+        // Wait for position change
+        await this.delay(50);
+
+        // Remove moving-back class to let CSS transitions take effect
+        this.cards.forEach(card => card.classList.remove('moving-back'));
+
+        // Step 3: Add new card at the front
+        removedCard.className = 'hero-card-back-1 transitioning-in';
+        removedCard.classList.remove('transitioning-out');
+        
+        // Add to beginning of array
+        this.cards.unshift(removedCard);
+
+        // Trigger reflow
+        void removedCard.offsetWidth;
+
+        // Make new card visible
+        await this.delay(50);
+        removedCard.classList.add('visible');
+
+        // Wait for new card to fully appear
+        await this.delay(this.transitionDuration);
+
+        // Clean up classes
+        removedCard.classList.remove('transitioning-in', 'visible');
+
+        this.isAnimating = false;
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -1079,6 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new VideoAutoplay();
     new TranscriptAnimation();
     new BroadcastMessageAnimator();
+    new HeroCardCycling(); 
 });
 
 // Handle page visibility changes for better performance
