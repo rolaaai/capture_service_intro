@@ -1156,6 +1156,74 @@ class HeroCardCycling {
 }
 
 
+// Starfield Background Animation Class
+class StarfieldBackground {
+  constructor() {
+    this.heroSection = document.querySelector('.hero');
+    this.starCounts = {
+      small: 700,
+      medium: 200,
+      large: 100
+    };
+    this.init();
+  }
+
+  init() {
+    if (!this.heroSection) {
+      console.warn('Hero section not found for starfield background');
+      return;
+    }
+    this.createStarfield();
+  }
+
+  createStarfield() {
+    const starfield = document.createElement('div');
+    starfield.className = 'starfield';
+
+    // Create three layers of stars with different speeds
+    for (let layer = 1; layer <= 3; layer++) {
+      const starsLayer = document.createElement('div');
+      starsLayer.className = `stars-layer stars-layer-${layer}`;
+
+      let count, size;
+      if (layer === 1) {
+        count = this.starCounts.small;
+        size = 'small';
+      } else if (layer === 2) {
+        count = this.starCounts.medium;
+        size = 'medium';
+      } else {
+        count = this.starCounts.large;
+        size = 'large';
+      }
+
+      // Generate stars
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = `star star-${size}`;
+        
+        // Random position
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        
+        star.style.left = `${x}%`;
+        star.style.top = `${y}%`;
+        
+        // Add slight random opacity variation
+        const opacity = 0.5 + Math.random() * 0.5;
+        star.style.opacity = opacity;
+
+        starsLayer.appendChild(star);
+      }
+
+      starfield.appendChild(starsLayer);
+    }
+
+    // Insert starfield as first child of hero section
+    this.heroSection.insertBefore(starfield, this.heroSection.firstChild);
+  }
+}
+
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -1174,6 +1242,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new TranscriptAnimation();
     new BroadcastMessageAnimator();
     new HeroCardCycling(); 
+    new StarfieldBackground();
 });
 
 // Handle page visibility changes for better performance
