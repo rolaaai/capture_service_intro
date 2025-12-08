@@ -1059,7 +1059,7 @@ class BroadcastIndicatorScroll {
     this.lastPageProgress = progress;
   }
 
-  updateMessageScroll(pauseZoneProgress) {
+   updateMessageScroll(pauseZoneProgress) {
     if (!this.messageElements) return;
 
     const totalMessages = this.messageElements.length;
@@ -1077,8 +1077,111 @@ class BroadcastIndicatorScroll {
       }
     });
 
+    // Update action icons with rotation around ellipse
+    this.updateActionIcons(pauseZoneProgress);
+
     // Smooth scroll position based on internal progress
     this.messagesWrapper.style.transform = `translateY(-${this.internalScrollProgress}px)`;
+  }
+
+    updateActionIcons(progress) {
+    const actionIcons = document.querySelectorAll('.action-icon');
+    if (!actionIcons.length) return;
+
+    const totalIcons = actionIcons.length;
+    
+    // Ellipse parameters (matching the SVG ellipse in viewport coordinates)
+    // The SVG viewBox is "0 0 560 400", so we use those coordinates
+    const centerX = 280; // Center X of ellipse
+    const centerY = 200; // Center Y of ellipse
+    const radiusX = 230; // Horizontal radius (slightly smaller to fit icons inside)
+    const radiusY = 150;  // Vertical radius
+    const tiltAngle = -15; // Tilt in degrees (matching SVG rotation)
+    
+    // Convert tilt to radians
+    const tiltRad = (tiltAngle * Math.PI) / 180;
+    
+    // Active position is at the right side of the ellipse (angle = 0, which is 3 o'clock position)
+    // After applying tilt, this becomes the front-right position
+    const activeAngle = 0; // Right side of ellipse
+    
+    // Calculate the active position coordinates (for glow reference)
+    const activeX = centerX + radiusX * Math.cos(tiltRad);
+    const activeY = centerY + radiusX * Math.sin(tiltRad);
+    
+    actionIcons.forEach((icon, index) => {
+      // Calculate base angle for this icon (evenly distributed, starting from top)
+      // Offset by -π/2 so icon 0 starts at top, then distribute clockwise
+      const baseAngle = ((index / totalIcons) * Math.PI * 2) - Math.PI / 2;
+      
+      // Add rotation based on scroll progress
+      // Each scroll "step" moves icons by 1/totalIcons of the ellipse
+      // progress goes from 0 to 1 for full internal scroll
+      const rotationAmount = progress * Math.PI * 2;
+      
+      // Current angle (icons move counter-clockwise as we scroll, so active position cycles through)
+      const currentAngle = baseAngle - rotationAmount;
+      
+      // Calculate position on untilted ellipse
+      let x = radiusX * Math.cos(currentAngle);
+      let y = radiusY * Math.sin(currentAngle);
+      
+      // Apply tilt transformation (rotate the ellipse by tiltAngle)
+      const xTilted = x * Math.cos(tiltRad) - y * Math.sin(tiltRad);
+      const yTilted = x * Math.sin(tiltRad) + y * Math.cos(tiltRad);
+      
+      // Add center offset to get final position in container coordinates
+      const finalX = centerX + xTilted;
+      const finalY = centerY + yTilted;
+      
+      // Calculate distance from the active (right-front) position
+      const distanceFromActive = Math.sqrt(
+        Math.pow(finalX - activeX, 2) + Math.pow(finalY - activeY, 2)
+      );
+      
+      // Maximum possible distance on the ellipse
+      const maxDistance = 2 * Math.max(radiusX, radiusY);
+      const normalizedDistance = Math.min(distanceFromActive / maxDistance, 1);
+      
+      // Calculate scale based on proximity to active position
+      // Icons at active position: scale 1.3, far icons: scale 0.7
+      const scaleMin = 0.7;
+      const scaleMax = 1.3;
+      const scale = scaleMax - (normalizedDistance * (scaleMax - scaleMin));
+      
+      // Calculate opacity based on proximity
+      // Active position: opacity 1, far: opacity 0.4
+      const opacityMin = 0.4;
+      const opacityMax = 1;
+      const opacity = opacityMax - (normalizedDistance * (opacityMax - opacityMin));
+      
+      // Determine if icon is in the "active" zone (closest to active position)
+      const activeThreshold = 40; // pixels - threshold to be considered "active"
+      const isActive = distanceFromActive < activeThreshold;
+      
+      // Calculate z-index based on Y position (higher = more in front for 3D effect)
+      // Icons at the bottom of ellipse should appear in front
+      const zIndex = Math.round(finalY);
+      
+      // Apply smooth transformations with CSS custom properties for better performance
+      icon.style.cssText = `
+        left: ${finalX}px;
+        top: ${finalY}px;
+        transform: translate(-50%, -50%) scale(${scale.toFixed(3)});
+        opacity: ${opacity.toFixed(3)};
+        z-index: ${zIndex};
+        transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+      `;
+      
+      // Update classes for active/completed states
+      icon.classList.remove('active', 'completed');
+      
+      if (isActive) {
+        icon.classList.add('active');
+      } else if (normalizedDistance > 0.5) {
+        icon.classList.add('completed');
+      }
+    });
   }
 
   resetMessages() {
@@ -1091,6 +1194,14 @@ class BroadcastIndicatorScroll {
     if (this.messagesWrapper) {
       this.messagesWrapper.style.transform = "translateY(0)";
     }
+
+    // Reset action icons
+    const actionIcons = document.querySelectorAll('.action-icon');
+    actionIcons.forEach((icon, index) => {
+      icon.classList.remove('active', 'completed');
+      icon.style.opacity = '0.5';
+      icon.style.transform = 'translate(-50%, -50%) scale(0.85)';
+    });
 
     this.internalScrollProgress = 0;
   }
