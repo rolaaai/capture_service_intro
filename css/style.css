@@ -74,7 +74,7 @@ body {
     position: fixed;
     top: 40px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
     background: rgb(255, 255, 255);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -86,17 +86,26 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease-out,
+        visibility 0.3s ease-out,
+        width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        border-radius 0.4s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
     opacity: 1;
     visibility: visible;
     -webkit-backdrop-filter: blur(20px);
-
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
-/* Hide navbar when scrolling up */
+/* Hide navbar when scrolling down */
 .navbar.hide-up {
     opacity: 0;
-    transform: translateX(-50%) translateY(-100px);
+    transform: translateX(-50%) translateY(-120%) translateZ(0);
     visibility: hidden;
     pointer-events: none;
 }
@@ -111,15 +120,15 @@ body {
 } */
 
 
-/* Scrolled state - reduce to 30% size */
+/* Scrolled state - compact navbar */
 .navbar.scrolled {
     width: 60%;
     padding: 12px 24px;
     border-radius: 25px;
     top: 30px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-    transform: translateX(-50%) scale(0.98);
+    transform: translateX(-50%) scale(0.98) translateZ(0);
     opacity: 1;
     visibility: visible;
     -webkit-backdrop-filter: blur(25px);
@@ -150,11 +159,12 @@ body {
     }
 } */
 
-/* Hide scrolled navbar when scrolling up */
+/* Hide scrolled navbar */
 .navbar.scrolled.hide-up {
     opacity: 0;
-    transform: translateX(-50%) translateY(-100px) scale(0.98);
+    transform: translateX(-50%) translateY(-120%) scale(0.98) translateZ(0);
     visibility: hidden;
+    pointer-events: none;
 }
 
 /* Show scrolled navbar when scrolling down */
@@ -1682,8 +1692,10 @@ body {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    /* background-color: red; */
+    transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Individual Text Items */
@@ -1698,9 +1710,14 @@ body {
             rgba(255, 255, 255, 0.08) 0%,
             rgba(255, 255, 255, 0.03) 100%);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    transform: scale(0.96);
+    transform: scale(0.96) translateZ(0);
     opacity: 0.6;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        opacity 0.25s ease-out,
+        background 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        color 0.25s ease;
     position: relative;
     overflow: hidden;
     box-shadow:
@@ -1711,6 +1728,8 @@ body {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     letter-spacing: 0.3px;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
 .broadcast-text-item::before {
@@ -1747,13 +1766,14 @@ body {
 /* Active message state */
 .broadcast-text-item.active {
     color: var(--accent-color, #00ff88);
-    transform: scale(1.05);
+    transform: scale(1.02) translateZ(0);
     opacity: 1;
-    background: rgba(0, 255, 136, 0.05);
+    background: rgba(0, 255, 136, 0.08);
     border-color: var(--accent-color, #00ff88);
     box-shadow:
-        0 0 20px rgba(0, 255, 136, 0.2),
-        0 4px 12px rgba(0, 0, 0, 0.3);
+        0 0 24px rgba(0, 255, 136, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(0, 255, 136, 0.2);
     font-weight: 500;
 }
 
@@ -1788,11 +1808,11 @@ body {
 
 /* Completed message state */
 .broadcast-text-item.completed {
-    transform: scale(0.9);
-    opacity: 0.3;
-    color: rgba(255, 255, 255, 0.3);
-    background: transparent;
-    border-color: transparent;
+    transform: scale(0.94) translateZ(0);
+    opacity: 0.35;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Animating state for container */
