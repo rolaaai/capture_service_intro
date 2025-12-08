@@ -424,60 +424,106 @@ class NavbarScroll {
   constructor() {
     this.navbar = document.querySelector(".navbar");
     this.lastScrollY = window.scrollY;
-    this.heroSection = document.querySelector(".hero");
-    this.emailInputSection = document.querySelector(".hero-cta");
+    this.lastTime = performance.now();
+    this.velocity = 0;
+    this.isHidden = false;
+    this.ticking = false;
+    this.scrollSamples = [];
+    this.maxSamples = 3; // Average over last 3 samples for smoothness
+    this.hideTimeout = null;
     this.init();
   }
 
   init() {
-    window.addEventListener("scroll", () => this.handleScroll());
+    // Use passive listener for best performance
+    window.addEventListener("scroll", this.onScroll.bind(this), { passive: true });
+  }
+
+  onScroll() {
+    if (!this.ticking) {
+      this.ticking = true;
+      requestAnimationFrame(() => {
+        this.handleScroll();
+        this.ticking = false;
+      });
+    }
   }
 
   handleScroll() {
+    const now = performance.now();
     const currentScrollY = window.scrollY;
-    const isScrollingDown = currentScrollY > this.lastScrollY;
-    const scrollDifference = Math.abs(currentScrollY - this.lastScrollY);
-
-    // Only trigger animations if there's significant scroll movement (threshold)
-    if (scrollDifference < 10) {
+    const deltaY = currentScrollY - this.lastScrollY;
+    const deltaTime = now - this.lastTime;
+    
+    // Check if scroll is locked (broadcast messages section)
+    if (document.body.style.position === 'fixed') {
+      if (!this.isHidden) {
+        this.hide();
+      }
       return;
     }
-
-    // Determine navbar state based on scroll position
-    let shouldBeScrolled = currentScrollY > 100;
-    let shouldBeHidden = false;
-
-    // Show/hide based on scroll direction (only after initial 100px scroll)
-    if (currentScrollY > 100) {
-      if (isScrollingDown) {
-        shouldBeHidden = true; // Show when scrolling up
-      } else {
-        shouldBeHidden = false; // Hide when scrolling down
-      }
+    
+    // Calculate velocity (pixels per millisecond)
+    const instantVelocity = deltaTime > 0 ? deltaY / deltaTime : 0;
+    
+    // Add to samples and keep only recent ones
+    this.scrollSamples.push(instantVelocity);
+    if (this.scrollSamples.length > this.maxSamples) {
+      this.scrollSamples.shift();
     }
-
-    // Remove all state classes first
-    this.navbar.classList.remove("scrolled", "hide-up", "show-down");
-
-    // Apply new state
-    if (shouldBeScrolled) {
-      this.navbar.classList.add("scrolled");
-
-      if (shouldBeHidden) {
-        this.navbar.classList.add("hide-up");
-      } else {
-        this.navbar.classList.add("show-down");
-      }
-    } else {
-      // Normal state (not scrolled)
-      if (shouldBeHidden) {
-        this.navbar.classList.add("hide-up");
-      } else {
-        this.navbar.classList.add("show-down");
-      }
-    }
-
+    
+    // Calculate average velocity for smoother detection
+    this.velocity = this.scrollSamples.reduce((a, b) => a + b, 0) / this.scrollSamples.length;
+    
+    // Update timestamps
     this.lastScrollY = currentScrollY;
+    this.lastTime = now;
+    
+    // At top of page - always show navbar in normal state
+    if (currentScrollY <= 60) {
+      this.navbar.classList.remove("scrolled", "hide-up");
+      this.isHidden = false;
+      this.scrollSamples = [];
+      return;
+    }
+    
+    // Add scrolled class when past threshold
+    if (currentScrollY > 100 && !this.navbar.classList.contains("scrolled")) {
+      this.navbar.classList.add("scrolled");
+    }
+    
+    // Velocity thresholds (in px/ms)
+    const hideThreshold = 0.3;   // Hide when scrolling down fast enough
+    const showThreshold = -0.4;  // Show when scrolling up fast enough
+    
+    // Scrolling DOWN fast - hide navbar
+    if (this.velocity > hideThreshold && currentScrollY > 100) {
+      if (!this.isHidden) {
+        this.hide();
+      }
+    }
+    // Scrolling UP fast - show navbar
+    else if (this.velocity < showThreshold) {
+      if (this.isHidden) {
+        this.show();
+      }
+    }
+    // Slow/stopped scrolling - maintain current state (don't flicker)
+  }
+  
+  hide() {
+    // Clear any pending show
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+    this.navbar.classList.add("hide-up");
+    this.isHidden = true;
+  }
+  
+  show() {
+    this.navbar.classList.remove("hide-up");
+    this.isHidden = false;
   }
 }
 
@@ -1065,23 +1111,47 @@ class BroadcastIndicatorScroll {
     const totalMessages = this.messageElements.length;
     const currentMessageFloat = pauseZoneProgress * (totalMessages - 1);
     const currentMessageIndex = Math.floor(currentMessageFloat);
+    const progressWithinMessage = currentMessageFloat - currentMessageIndex;
+
+    // Use lerping for smooth scroll position
+    const targetScrollPosition = this.internalScrollProgress;
+    if (this.currentScrollPosition === undefined) {
+      this.currentScrollPosition = targetScrollPosition;
+    }
+    
+    // Smooth lerp towards target (0.15 = 15% per frame for smooth following)
+    const lerpFactor = 0.15;
+    this.currentScrollPosition += (targetScrollPosition - this.currentScrollPosition) * lerpFactor;
 
     // Update each message state with smooth transitions
-    this.messageElements.forEach((message, index) => {
-      message.classList.remove("active", "completed");
+    // Only update classes when index actually changes (optimization)
+    if (this.lastActiveIndex !== currentMessageIndex) {
+      this.messageElements.forEach((message, index) => {
+        message.classList.remove("active", "completed");
 
-      if (index < currentMessageIndex) {
-        message.classList.add("completed");
-      } else if (index === currentMessageIndex) {
-        message.classList.add("active");
-      }
-    });
+        if (index < currentMessageIndex) {
+          message.classList.add("completed");
+        } else if (index === currentMessageIndex) {
+          message.classList.add("active");
+        }
+      });
+      this.lastActiveIndex = currentMessageIndex;
+    }
 
     // Update action icons with rotation around ellipse
     this.updateActionIcons(pauseZoneProgress);
 
-    // Smooth scroll position based on internal progress
-    this.messagesWrapper.style.transform = `translateY(-${this.internalScrollProgress}px)`;
+    // Apply smooth transform using lerped value
+    this.messagesWrapper.style.transform = `translateY(-${this.currentScrollPosition}px)`;
+    
+    // Continue animation if not at target (for smooth catch-up)
+    if (Math.abs(this.currentScrollPosition - targetScrollPosition) > 0.5) {
+      requestAnimationFrame(() => {
+        if (this.isPaused && this.scrollLocked) {
+          this.updateMessageScroll(pauseZoneProgress);
+        }
+      });
+    }
   }
 
     updateActionIcons(progress) {
@@ -1203,7 +1273,10 @@ class BroadcastIndicatorScroll {
       icon.style.transform = 'translate(-50%, -50%) scale(0.85)';
     });
 
+    // Reset scroll state
     this.internalScrollProgress = 0;
+    this.currentScrollPosition = 0;
+    this.lastActiveIndex = -1;
   }
 }
 
