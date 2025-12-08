@@ -258,44 +258,90 @@
                       <div class="wifi-dot"></div>
                     </div>
                     <div class="broadcast-line">
-                      <div class="broadcast-message-box">
-                        <p>
-                          Rolaa delivers real-time transcription with speaker
-                          labels, timestamps, and punctuation. It recognizes
-                          custom terminology, detects languages, highlights
-                          questions and decisions, and tags action items while
-                          staying aligned with the recording.
-                        </p>
+                      <!-- message floating container -->
+                      <div class="active-broadcast-message-container"></div>
+                      <!-- messages action container -->
+                      <div class="messages-action-container">
+                        <svg
+                          class="action-ellipse"
+                          viewBox="0 0 280 200"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <defs>
+                            <linearGradient
+                              id="ellipseGradient"
+                              x1="0%"
+                              y1="0%"
+                              x2="100%"
+                              y2="100%"
+                            >
+                              <stop
+                                offset="0%"
+                                style="
+                                  stop-color: rgba(0, 255, 136, 0.2);
+                                  stop-opacity: 1;
+                                "
+                              />
+                              <stop
+                                offset="100%"
+                                style="
+                                  stop-color: rgba(0, 255, 136, 0.05);
+                                  stop-opacity: 1;
+                                "
+                              />
+                            </linearGradient>
+                          </defs>
+                          <!-- Tilted ellipse -->
+                          <ellipse
+                            cx="140"
+                            cy="100"
+                            rx="120"
+                            ry="80"
+                            fill="url(#ellipseGradient)"
+                            stroke="rgba(0,255,136,0.4)"
+                            stroke-width="2"
+                            transform="rotate(-15 140 100)"
+                            class="ellipse-path"
+                          />
+                        </svg>
+
+                        <!-- Action Icons -->
+                        <div class="action-icons-container">
+                          <div
+                            class="action-icon"
+                            data-action="transcribe"
+                            data-step="0"
+                          >
+                            <span class="icon-emoji">📝</span>
+                            <span class="icon-label">Transcribe</span>
+                          </div>
+                          <div
+                            class="action-icon"
+                            data-action="process"
+                            data-step="1"
+                          >
+                            <span class="icon-emoji">⚙️</span>
+                            <span class="icon-label">Process</span>
+                          </div>
+                          <div
+                            class="action-icon"
+                            data-action="analyze"
+                            data-step="2"
+                          >
+                            <span class="icon-emoji">🔍</span>
+                            <span class="icon-label">Analyze</span>
+                          </div>
+                          <div
+                            class="action-icon"
+                            data-action="sync"
+                            data-step="3"
+                          >
+                            <span class="icon-emoji">☁️</span>
+                            <span class="icon-label">Sync</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="broadcast-message-box">
-                        <p>
-                          Rolaa processes captured audio using noise reduction,
-                          echo cancellation, and gain balancing. It enhances
-                          voice clarity, removes distortions, detects speech
-                          segments, and prepares synchronized audio tracks
-                          aligned with multi-speaker transcription timelines.
-                        </p>
-                      </div>
-                      <div class="broadcast-message-box">
-                        <p>
-                          Rolaa applies AI enhancement to refine accuracy,
-                          improve terminology recognition, detect sentiment,
-                          classify topics, and correct misheard phrases. It
-                          enriches transcripts with context, identifies
-                          highlights, and extracts actionable insights
-                          automatically and consistently.
-                        </p>
-                      </div>
-                      <div class="broadcast-message-box">
-                        <p>
-                          Rolaa securely syncs recordings, transcripts,
-                          insights, and metadata to your cloud workspace.
-                          Encrypted uploads ensure reliability, instant
-                          availability, version history, access control,
-                          searchable archives, shareable links, and multi-device
-                          accessibility across teams effortlessly.
-                        </p>
-                      </div>
+
                       <!-- bot-broadcast-dashboard -->
                       <div class="bot-broadcast-dashboard">
                         <!-- Sidebar -->
