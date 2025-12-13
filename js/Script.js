@@ -436,7 +436,9 @@ class NavbarScroll {
 
   init() {
     // Use passive listener for best performance
-    window.addEventListener("scroll", this.onScroll.bind(this), { passive: true });
+    window.addEventListener("scroll", this.onScroll.bind(this), {
+      passive: true,
+    });
   }
 
   onScroll() {
@@ -454,31 +456,32 @@ class NavbarScroll {
     const currentScrollY = window.scrollY;
     const deltaY = currentScrollY - this.lastScrollY;
     const deltaTime = now - this.lastTime;
-    
+
     // Check if scroll is locked (broadcast messages section)
-    if (document.body.style.position === 'fixed') {
+    if (document.body.style.position === "fixed") {
       if (!this.isHidden) {
         this.hide();
       }
       return;
     }
-    
+
     // Calculate velocity (pixels per millisecond)
     const instantVelocity = deltaTime > 0 ? deltaY / deltaTime : 0;
-    
+
     // Add to samples and keep only recent ones
     this.scrollSamples.push(instantVelocity);
     if (this.scrollSamples.length > this.maxSamples) {
       this.scrollSamples.shift();
     }
-    
+
     // Calculate average velocity for smoother detection
-    this.velocity = this.scrollSamples.reduce((a, b) => a + b, 0) / this.scrollSamples.length;
-    
+    this.velocity =
+      this.scrollSamples.reduce((a, b) => a + b, 0) / this.scrollSamples.length;
+
     // Update timestamps
     this.lastScrollY = currentScrollY;
     this.lastTime = now;
-    
+
     // At top of page - always show navbar in normal state
     if (currentScrollY <= 60) {
       this.navbar.classList.remove("scrolled", "hide-up");
@@ -486,16 +489,16 @@ class NavbarScroll {
       this.scrollSamples = [];
       return;
     }
-    
+
     // Add scrolled class when past threshold
     if (currentScrollY > 100 && !this.navbar.classList.contains("scrolled")) {
       this.navbar.classList.add("scrolled");
     }
-    
+
     // Velocity thresholds (in px/ms)
-    const hideThreshold = 0.3;   // Hide when scrolling down fast enough
-    const showThreshold = -0.4;  // Show when scrolling up fast enough
-    
+    const hideThreshold = 0.3; // Hide when scrolling down fast enough
+    const showThreshold = -0.4; // Show when scrolling up fast enough
+
     // Scrolling DOWN fast - hide navbar
     if (this.velocity > hideThreshold && currentScrollY > 100) {
       if (!this.isHidden) {
@@ -510,7 +513,7 @@ class NavbarScroll {
     }
     // Slow/stopped scrolling - maintain current state (don't flicker)
   }
-  
+
   hide() {
     // Clear any pending show
     if (this.hideTimeout) {
@@ -520,7 +523,7 @@ class NavbarScroll {
     this.navbar.classList.add("hide-up");
     this.isHidden = true;
   }
-  
+
   show() {
     this.navbar.classList.remove("hide-up");
     this.isHidden = false;
@@ -775,8 +778,9 @@ class BroadcastIndicatorScroll {
     this.textMessages = [
       "Rolaa captures your meeting with real-time transcription and speaker identification",
       "AI processes audio with noise reduction and detects key moments automatically",
-      "Smart analysis highlights decisions, action items, and important questions",
+      "Summary emails with organized insights and prioritized tasks sent automatically",
       "Everything syncs securely to your workspace with instant multi-device access",
+      
     ];
     this.init();
   }
@@ -788,20 +792,20 @@ class BroadcastIndicatorScroll {
     }
 
     this.createMessageElements();
-    
+
     // Use passive:false only when necessary (during locked scroll)
     window.addEventListener("scroll", () => this.handleScroll(), {
       passive: true,
     });
-    
+
     window.addEventListener("wheel", (e) => this.handleWheel(e), {
       passive: false,
     });
-    
+
     window.addEventListener("touchmove", (e) => this.handleTouchMove(e), {
       passive: false,
     });
-    
+
     // Initial position update
     requestAnimationFrame(() => this.updateIndicatorPosition());
   }
@@ -911,7 +915,7 @@ class BroadcastIndicatorScroll {
     document.body.style.width = "100%";
   }
 
-   unlockScroll(completionDirection) {
+ unlockScroll(completionDirection) {
     this.scrollLocked = false;
     this.isPaused = false;
 
@@ -925,43 +929,27 @@ class BroadcastIndicatorScroll {
 
     // Handle scroll continuation based on completion direction
     if (completionDirection === "forward") {
-      // Completed scrolling forward (down) - continue page scroll down slightly
-      window.scrollTo(0, scrollY + 20);
+        // Completed scrolling forward (down) - continue page scroll down slightly
+        window.scrollTo(0, scrollY + 20);
 
-      // Clean up message container with delay
-      setTimeout(() => {
-        if (!this.isPaused) {
-          this.messageContainer.classList.remove("active", "animating");
-          
-          // Hide action container with delay
-          if (this.actionContainer) {
-            this.actionContainer.classList.remove("active");
-          }
-        }
-      }, 800);
-    } else if (completionDirection === "backward") {
-      // Completed scrolling backward (up) - continue page scroll up slightly
-      window.scrollTo(0, scrollY - 20);
-
-      // Clean up message container with delay
-      setTimeout(() => {
-        this.messageContainer.classList.remove("active", "animating");
-        this.resetMessages();
+        // DON'T hide containers when scrolling forward
+        // Keep them visible for user reference
         
-        // Hide action container
-        if (this.actionContainer) {
-          this.actionContainer.classList.remove("active");
-        }
-      }, 800);
+    } else if (completionDirection === "backward") {
+        // Completed scrolling backward (up) - continue page scroll up slightly
+        window.scrollTo(0, scrollY - 20);
+
+        // DON'T hide containers when scrolling backward either
+        // Keep them visible
     }
 
     // Force indicator position update
     requestAnimationFrame(() => {
-      this.updateIndicatorPosition();
+        this.updateIndicatorPosition();
     });
-  }
+}
 
-   updateIndicatorPosition() {
+  updateIndicatorPosition() {
     if (this.scrollLocked) return;
 
     const isMeetBoxActive = this.meetBox.classList.contains("active");
@@ -969,7 +957,7 @@ class BroadcastIndicatorScroll {
     if (!isMeetBoxActive) {
       this.indicator.style.opacity = "0";
       if (this.messageContainer) {
-        this.messageContainer.classList.remove("active", "animating");
+        this.messageContainer.classList.remove("active");
         this.resetMessages();
       }
       if (this.actionContainer) {
@@ -1034,8 +1022,8 @@ class BroadcastIndicatorScroll {
     if (shouldPause && !this.isPaused && !this.scrollLocked) {
       this.isPaused = true;
       this.lockScroll(currentDirection);
-      this.messageContainer.classList.add("active", "animating");
-      
+      this.messageContainer.classList.add("active");
+
       // Activate action container when pausing at 30%
       if (this.actionContainer) {
         this.actionContainer.classList.add("active");
@@ -1086,14 +1074,14 @@ class BroadcastIndicatorScroll {
         progress <= this.pauseStartProgress + hintRange
       ) {
         this.messageContainer.classList.add("active");
-        
+
         // Also show action container in hint range
         if (this.actionContainer) {
           this.actionContainer.classList.add("active");
         }
       } else if (!this.isPaused) {
         this.messageContainer.classList.remove("active", "animating");
-        
+
         // Hide action container when outside range
         if (this.actionContainer) {
           this.actionContainer.classList.remove("active");
@@ -1105,7 +1093,7 @@ class BroadcastIndicatorScroll {
     this.lastPageProgress = progress;
   }
 
-   updateMessageScroll(pauseZoneProgress) {
+  updateMessageScroll(pauseZoneProgress) {
     if (!this.messageElements) return;
 
     const totalMessages = this.messageElements.length;
@@ -1118,10 +1106,11 @@ class BroadcastIndicatorScroll {
     if (this.currentScrollPosition === undefined) {
       this.currentScrollPosition = targetScrollPosition;
     }
-    
+
     // Smooth lerp towards target (0.15 = 15% per frame for smooth following)
     const lerpFactor = 0.15;
-    this.currentScrollPosition += (targetScrollPosition - this.currentScrollPosition) * lerpFactor;
+    this.currentScrollPosition +=
+      (targetScrollPosition - this.currentScrollPosition) * lerpFactor;
 
     // Update each message state with smooth transitions
     // Only update classes when index actually changes (optimization)
@@ -1143,7 +1132,7 @@ class BroadcastIndicatorScroll {
 
     // Apply smooth transform using lerped value
     this.messagesWrapper.style.transform = `translateY(-${this.currentScrollPosition}px)`;
-    
+
     // Continue animation if not at target (for smooth catch-up)
     if (Math.abs(this.currentScrollPosition - targetScrollPosition) > 0.5) {
       requestAnimationFrame(() => {
@@ -1154,85 +1143,86 @@ class BroadcastIndicatorScroll {
     }
   }
 
-    updateActionIcons(progress) {
-    const actionIcons = document.querySelectorAll('.action-icon');
+  updateActionIcons(progress) {
+    const actionIcons = document.querySelectorAll(".action-icon");
     if (!actionIcons.length) return;
 
     const totalIcons = actionIcons.length;
-    
+
     // Ellipse parameters (matching the SVG ellipse in viewport coordinates)
     // The SVG viewBox is "0 0 560 400", so we use those coordinates
     const centerX = 280; // Center X of ellipse
     const centerY = 200; // Center Y of ellipse
     const radiusX = 230; // Horizontal radius (slightly smaller to fit icons inside)
-    const radiusY = 150;  // Vertical radius
+    const radiusY = 150; // Vertical radius
     const tiltAngle = -15; // Tilt in degrees (matching SVG rotation)
-    
+
     // Convert tilt to radians
     const tiltRad = (tiltAngle * Math.PI) / 180;
-    
+
     // Active position is at the right side of the ellipse (angle = 0, which is 3 o'clock position)
     // After applying tilt, this becomes the front-right position
     const activeAngle = 0; // Right side of ellipse
-    
+
     // Calculate the active position coordinates (for glow reference)
     const activeX = centerX + radiusX * Math.cos(tiltRad);
     const activeY = centerY + radiusX * Math.sin(tiltRad);
-    
+
     actionIcons.forEach((icon, index) => {
       // Calculate base angle for this icon (evenly distributed, starting from top)
       // Offset by -π/2 so icon 0 starts at top, then distribute clockwise
-      const baseAngle = ((index / totalIcons) * Math.PI * 2) - Math.PI / 2;
-      
+      const baseAngle = (index / totalIcons) * Math.PI * 2 - Math.PI / 2;
+
       // Add rotation based on scroll progress
       // Each scroll "step" moves icons by 1/totalIcons of the ellipse
       // progress goes from 0 to 1 for full internal scroll
       const rotationAmount = progress * Math.PI * 2;
-      
+
       // Current angle (icons move counter-clockwise as we scroll, so active position cycles through)
       const currentAngle = baseAngle - rotationAmount;
-      
+
       // Calculate position on untilted ellipse
       let x = radiusX * Math.cos(currentAngle);
       let y = radiusY * Math.sin(currentAngle);
-      
+
       // Apply tilt transformation (rotate the ellipse by tiltAngle)
       const xTilted = x * Math.cos(tiltRad) - y * Math.sin(tiltRad);
       const yTilted = x * Math.sin(tiltRad) + y * Math.cos(tiltRad);
-      
+
       // Add center offset to get final position in container coordinates
       const finalX = centerX + xTilted;
       const finalY = centerY + yTilted;
-      
+
       // Calculate distance from the active (right-front) position
       const distanceFromActive = Math.sqrt(
         Math.pow(finalX - activeX, 2) + Math.pow(finalY - activeY, 2)
       );
-      
+
       // Maximum possible distance on the ellipse
       const maxDistance = 2 * Math.max(radiusX, radiusY);
       const normalizedDistance = Math.min(distanceFromActive / maxDistance, 1);
-      
+
       // Calculate scale based on proximity to active position
       // Icons at active position: scale 1.3, far icons: scale 0.7
       const scaleMin = 0.7;
       const scaleMax = 1.3;
-      const scale = scaleMax - (normalizedDistance * (scaleMax - scaleMin));
-      
+      const scale = scaleMax - normalizedDistance * (scaleMax - scaleMin);
+
       // Calculate opacity based on proximity
       // Active position: opacity 1, far: opacity 0.4
       const opacityMin = 0.4;
       const opacityMax = 1;
-      const opacity = opacityMax - (normalizedDistance * (opacityMax - opacityMin));
-      
+      const opacity =
+        opacityMax - normalizedDistance * (opacityMax - opacityMin);
+
       // Determine if icon is in the "active" zone (closest to active position)
       const activeThreshold = 40; // pixels - threshold to be considered "active"
       const isActive = distanceFromActive < activeThreshold;
-      
+
       // Calculate z-index based on Y position (higher = more in front for 3D effect)
       // Icons at the bottom of ellipse should appear in front
       const zIndex = Math.round(finalY);
-      
+
       // Apply smooth transformations with CSS custom properties for better performance
       icon.style.cssText = `
         left: ${finalX}px;
@@ -1242,14 +1232,14 @@ class BroadcastIndicatorScroll {
         z-index: ${zIndex};
         transition: transform 0.15s ease-out, opacity 0.15s ease-out;
       `;
-      
+
       // Update classes for active/completed states
-      icon.classList.remove('active', 'completed');
-      
+      icon.classList.remove("active", "completed");
+
       if (isActive) {
-        icon.classList.add('active');
+        icon.classList.add("active");
       } else if (normalizedDistance > 0.5) {
-        icon.classList.add('completed');
+        icon.classList.add("completed");
       }
     });
   }
@@ -1266,11 +1256,11 @@ class BroadcastIndicatorScroll {
     }
 
     // Reset action icons
-    const actionIcons = document.querySelectorAll('.action-icon');
+    const actionIcons = document.querySelectorAll(".action-icon");
     actionIcons.forEach((icon, index) => {
-      icon.classList.remove('active', 'completed');
-      icon.style.opacity = '0.5';
-      icon.style.transform = 'translate(-50%, -50%) scale(0.85)';
+      icon.classList.remove("active", "completed");
+      icon.style.opacity = "0.5";
+      icon.style.transform = "translate(-50%, -50%) scale(0.85)";
     });
 
     // Reset scroll state
@@ -2067,6 +2057,248 @@ class StarfieldBackground {
   }
 }
 
+class ApproachCardShrink {
+  constructor() {
+    this.card = document.querySelector(".approach-card");
+    this.section = document.querySelector(".approach");
+    this.petalCards = document.querySelector(".petal-cards");
+    this.petals = document.querySelectorAll(".petal-card");
+    this.updateScheduled = false;
+    this.currentProgress = 0;
+    this.targetProgress = 0;
+    this.animationFrame = null;
+
+    if (!this.card || !this.section) {
+      console.warn("Approach card or section not found");
+      return;
+    }
+
+    this.init();
+  }
+
+  init() {
+    window.addEventListener("scroll", () => this.handleScroll(), {
+      passive: true,
+    });
+    // Start smooth animation loop
+    this.smoothUpdate();
+  }
+
+  handleScroll() {
+    const rect = this.section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = this.section.offsetHeight;
+
+    const sectionTop = rect.top;
+    const sectionBottom = rect.bottom;
+
+    if (sectionTop < windowHeight && sectionBottom > 0) {
+      const visibleProgress = Math.max(
+        0,
+        Math.min(
+          1,
+          (windowHeight - sectionTop) / (windowHeight + sectionHeight)
+        )
+      );
+
+      const shrinkStart = 0;
+      const shrinkEnd = 0.5;
+
+      if (visibleProgress >= shrinkStart && visibleProgress <= shrinkEnd) {
+        this.targetProgress =
+          (visibleProgress - shrinkStart) / (shrinkEnd - shrinkStart);
+      } else if (visibleProgress > shrinkEnd) {
+        this.targetProgress = 1;
+      } else {
+        this.targetProgress = 0;
+      }
+    } else {
+      this.targetProgress = 0;
+    }
+  }
+
+  smoothUpdate() {
+    const lerpFactor = 0.08;
+    this.currentProgress +=
+      (this.targetProgress - this.currentProgress) * lerpFactor;
+
+    if (Math.abs(this.currentProgress - this.targetProgress) > 0.001) {
+      this.applyShrinkEffect(this.currentProgress);
+      this.applyPetalEffect(this.currentProgress);
+    }
+
+    this.animationFrame = requestAnimationFrame(() => this.smoothUpdate());
+  }
+
+  applyShrinkEffect(progress) {
+    const easeProgress = this.easeInOutQuart(progress);
+
+    const originalWidth = 1200;
+    const originalHeight = 400;
+    const originalPadding = 80;
+    const originalRadius = 32;
+
+    const targetWidth = 300;
+    const targetHeight = 300;
+    const targetPadding = 20;
+    const targetRadius = 24;
+
+    const currentWidth =
+      originalWidth - (originalWidth - targetWidth) * easeProgress;
+    const currentHeight =
+      originalHeight - (originalHeight - targetHeight) * easeProgress;
+    const currentPadding =
+      originalPadding - (originalPadding - targetPadding) * easeProgress;
+    const currentRadius =
+      originalRadius - (originalRadius - targetRadius) * easeProgress;
+
+    this.card.style.maxWidth = `${currentWidth.toFixed(2)}px`;
+    this.card.style.width = `${currentWidth.toFixed(2)}px`;
+    this.card.style.height = `${currentHeight.toFixed(2)}px`;
+    this.card.style.padding = `${currentPadding.toFixed(2)}px`;
+    this.card.style.borderRadius = `${currentRadius.toFixed(2)}px`;
+
+    const content = this.card.querySelector(".approach-card-content");
+    if (content) {
+      const contentProgress = Math.min(1, easeProgress * 1.3);
+      const contentOpacity = Math.max(0, 1 - contentProgress);
+      const contentScale = Math.max(0.5, 1 - contentProgress * 0.5);
+
+      content.style.opacity = contentOpacity.toFixed(3);
+      content.style.transform = `scale(${contentScale.toFixed(3)})`;
+    }
+
+    // Animate "Because" text - appears when content disappears
+    const because = this.card.querySelector(".approach-because");
+    if (because) {
+      // Because starts appearing at 40% progress (when content is mostly gone)
+      // and fully visible at 60% progress
+      const becauseStart = 0.4;
+      const becauseEnd = 0.6;
+
+      let becauseProgress = 0;
+      if (progress >= becauseStart && progress <= becauseEnd) {
+        becauseProgress =
+          (progress - becauseStart) / (becauseEnd - becauseStart);
+      } else if (progress > becauseEnd) {
+        becauseProgress = 1;
+      }
+
+      // Ease the because animation for smooth appearance
+      const becauseEased = this.easeOutBack(becauseProgress);
+
+      // Scale from 0 to 1
+      const becauseScale = becauseEased;
+      const becauseOpacity = becauseEased;
+
+      because.style.transform = `translate(-50%, -50%) scale(${becauseScale.toFixed(
+        3
+      )})`;
+      because.style.opacity = becauseOpacity.toFixed(3);
+    }
+
+      const borderOpacity = 0.2 + (easeProgress * 0.4);
+    const shadowIntensity = easeProgress * 0.3;
+    const shadowSpread = 20 + (40 * easeProgress);
+    const shadowBlur = 60 + (40 * easeProgress);
+    
+    this.card.style.borderColor = `rgba(0, 255, 136, ${borderOpacity.toFixed(3)})`;
+    this.card.style.boxShadow = `0 ${shadowSpread.toFixed(1)}px ${shadowBlur.toFixed(1)}px rgba(0, 255, 136, ${shadowIntensity.toFixed(3)})`;
+    
+    const grid = this.card.querySelector('.approach-card-grid');
+    if (grid) {
+        const gridOpacity = 0.5 + (easeProgress * 0.3);
+        const gridSize = 40 - (20 * easeProgress);
+        grid.style.opacity = gridOpacity.toFixed(3);
+        grid.style.backgroundSize = `${gridSize.toFixed(1)}px ${gridSize.toFixed(1)}px`;
+    }
+    
+    if (progress > 0.85) {
+        this.card.classList.add('shrinking');
+    } else {
+        this.card.classList.remove('shrinking');
+    }
+}
+
+  applyPetalEffect(progress) {
+    // Petals start growing at 30% shrink progress and fully bloom at 90%
+    const petalStart = 0.6;
+    const petalEnd = 0.7;
+
+    let petalProgress = 0;
+    if (progress >= petalStart && progress <= petalEnd) {
+      petalProgress = (progress - petalStart) / (petalEnd - petalStart);
+    } else if (progress > petalEnd) {
+      petalProgress = 1;
+    }
+
+    // Apply custom easing for flower blooming effect (ease-out-back for spring)
+    const bloomProgress = this.easeOutBack(petalProgress);
+
+    // Calculate spread distance (from 0 to 350px)
+    const spreadDistance = 350 * bloomProgress;
+
+    // All petals scale equally together - no staggering
+    const petalScale = bloomProgress;
+    const petalOpacity = bloomProgress;
+
+    // Card rotation - all petals rotate together
+    const cardRotation = bloomProgress * 180; // Half rotation during bloom
+
+    // Calculate angles for 8 petals (45 degrees apart, starting from top)
+    const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+
+    this.petals.forEach((petal, index) => {
+      const angle = angles[index];
+      const radians = (angle * Math.PI) / 180;
+
+      // Calculate x and y offsets for circular spread
+      const offsetX = Math.sin(radians) * spreadDistance;
+      const offsetY = -Math.cos(radians) * spreadDistance;
+
+      // Apply transform with rotation - ALL PETALS SCALE EQUALLY
+      petal.style.transform = `translate(calc(-50% + ${offsetX.toFixed(
+        2
+      )}px), calc(-50% + ${offsetY.toFixed(2)}px)) scale(${petalScale.toFixed(
+        3
+      )}) rotate(${cardRotation.toFixed(1)}deg)`;
+      petal.style.opacity = petalOpacity.toFixed(3);
+
+      // Counter-rotate the content (icon and text) to keep them upright
+      const petalContent = petal.querySelector(".petal-content");
+      if (petalContent) {
+        petalContent.style.transform = `rotate(${(-cardRotation).toFixed(
+          1
+        )}deg)`;
+      }
+    });
+
+    // Toggle active class for CSS transitions
+    if (petalProgress > 0.1) {
+      this.petalCards?.classList.add("active");
+    } else {
+      this.petalCards?.classList.remove("active");
+    }
+  }
+
+  easeInOutQuart(t) {
+    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+  }
+
+  // Ease-out-back creates a spring/overshoot effect perfect for blooming
+  easeOutBack(t) {
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  }
+
+  destroy() {
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+    }
+  }
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   new WaitlistManager();
@@ -2085,6 +2317,7 @@ document.addEventListener("DOMContentLoaded", () => {
   new BroadcastMessageAnimator();
   new HeroCardCycling();
   new StarfieldBackground();
+  new ApproachCardShrink();
 });
 
 // Handle page visibility changes for better performance
