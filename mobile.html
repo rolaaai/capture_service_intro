@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Rolaa Bot - Your AI that attends, records, and summarizes every meeting automatically.">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <title>Rolaa Bot - AI Meeting Assistant</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Mobile Styles -->
+    <link rel="stylesheet" href="css/mobile-style.css">
+
+    <!-- Redirect desktop users to index.html -->
+    <script>
+      (function() {
+        function checkScreenAndRedirect() {
+          // If screen width > 768px, redirect to desktop version
+          if (window.innerWidth > 768) {
+            window.location.href = 'index.html';
+          }
+        }
+        // Check on load
+        checkScreenAndRedirect();
+        // Check on resize
+        window.addEventListener('resize', checkScreenAndRedirect);
+      })();
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="logo-text">Rolaa Bot</span>
+        </div>
+        <button class="menu-btn" id="menu-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#faq">FAQ</a>
+        <a href="#cta" class="cta-btn">Get Started</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <span class="hero-badge">AI-Powered Meeting Assistant</span>
+        <h1>Your AI That <span class="highlight">Attends</span>, Records & Summarizes Every Meeting</h1>
+        <p>Never miss a meeting again. Let Rolaa Bot capture every detail, even when you can't attend.</p>
+        <a href="#cta" class="hero-cta">Get Started Free</a>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Choose <span class="highlight">Rolaa Bot?</span></h2>
+        
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Auto-Join Meetings</h3>
+                <p>Rolaa Bot automatically joins your scheduled meetings on Zoom, Google Meet, and Teams.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Smart Transcription</h3>
+                <p>Get accurate, real-time transcriptions with speaker identification and timestamps.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>AI Summaries</h3>
+                <p>Receive concise meeting summaries with key decisions, action items, and follow-ups.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Easy Integrations</h3>
+                <p>Connect with Slack, Notion, and your favorite tools for seamless workflow.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How It <span class="highlight">Works</span></h2>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Connect Your Calendar</h3>
+                    <p>Link your Google or Outlook calendar to let Rolaa Bot know about your meetings.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Bot Joins Automatically</h3>
+                    <p>Rolaa Bot joins your meetings on time and starts recording and transcribing.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Get Instant Insights</h3>
+                    <p>Receive AI-generated summaries, action items, and searchable transcripts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <h2 class="section-title">What You <span class="highlight">Get</span></h2>
+        
+        <div class="benefit-list">
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Automatic meeting recordings</span>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Real-time transcription with 98% accuracy</span>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>AI-powered meeting summaries</span>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Action items extraction</span>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Searchable meeting archive</span>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Team collaboration features</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h2 class="section-title">Frequently Asked <span class="highlight">Questions</span></h2>
+        
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">How does Rolaa Bot join my meetings?</button>
+                <div class="faq-answer">
+                    <p>Once you connect your calendar, Rolaa Bot automatically receives meeting invites and joins as a participant using the meeting link.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">Is my data secure?</button>
+                <div class="faq-answer">
+                    <p>Yes! We use enterprise-grade encryption for all recordings and transcripts. Your data is never shared with third parties.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">Which platforms are supported?</button>
+                <div class="faq-answer">
+                    <p>Rolaa Bot works with Zoom, Google Meet, Microsoft Teams, and Webex. More platforms coming soon!</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">Can I try it for free?</button>
+                <div class="faq-answer">
+                    <p>Absolutely! We offer a free tier with 5 meetings per month. No credit card required to get started.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="cta-box">
+            <h2>Ready to Transform Your Meetings?</h2>
+            <p>Join thousands of teams already using Rolaa Bot to save time and never miss important details.</p>
+            <a href="#" class="cta-btn">Start Free Trial</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">
+            <div class="logo-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="logo-text">Rolaa Bot</span>
+        </div>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="footer-copyright">© 2024 Rolaa Bot. All rights reserved.</p>
+    </footer>
+
+    <!-- Simple JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.classList.toggle('body-no-scroll');
+        });
+
+        // Close menu when clicking a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.classList.remove('body-no-scroll');
+            });
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // Close all other FAQs
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                // Toggle current FAQ
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
