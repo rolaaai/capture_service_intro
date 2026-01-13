@@ -56,6 +56,22 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Redirect mobile users to mobile.html -->
+    <script>
+      (function() {
+        function checkScreenAndRedirect() {
+          // Check if on mobile device (screen width <= 768px)
+          if (window.innerWidth <= 768 && !window.location.pathname.includes('mobile.html')) {
+            window.location.href = 'mobile.html';
+          }
+        }
+        // Check on load
+        checkScreenAndRedirect();
+        // Check on resize
+        window.addEventListener('resize', checkScreenAndRedirect);
+      })();
+    </script>
   </head>
 
   <body>
