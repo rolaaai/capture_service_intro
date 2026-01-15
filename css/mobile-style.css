@@ -195,9 +195,9 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: rgba(0, 255, 136, 0.1);
-    border: 1px solid rgba(0, 255, 136, 0.3);
+    /* padding: 8px 16px; */
+    /* background: rgba(0, 255, 136, 0.1); */
+    /* border: 1px solid rgba(0, 255, 136, 0.3); */
     border-radius: 50px;
     color: var(--accent-color);
     font-size: 0.85rem;
@@ -205,9 +205,9 @@ body {
     margin-bottom: var(--spacing-lg);
 }
 
-.hero-badge::before {
+/* .hero-badge::before {
     content: '✨';
-}
+} */
 
 .hero h1 {
     font-size: 2rem;
